@@ -11,6 +11,7 @@ blueprint:
       selector:
         entity:
           domain: binary_sensor
+
     target_entity:
       name: Light or Switch
       description: The light or switch to control.
@@ -19,14 +20,18 @@ blueprint:
           filter:
             - domain: light
             - domain: switch
+
     delay_seconds:
       name: Delay Before Turning On
-      description: Time to wait after door opens before turning on the light. If door closes during this time, the light will not turn on.
+      description: >
+        Number of seconds to wait after the door opens before turning on the light/switch.
+        If the door closes during this delay, the light will not be turned on.
       default: 0
       selector:
         number:
           min: 0
           max: 60
+          step: 1
           unit_of_measurement: seconds
           mode: slider
 
@@ -48,7 +53,6 @@ action:
       delay_time: !input delay_seconds
 
   - choose:
-      # Door opened
       - conditions:
           - condition: template
             value_template: "{{ new_state == 'on' }}"
@@ -58,15 +62,12 @@ action:
                 entity_id: !input door_sensor
                 to: 'off'
             timeout: "{{ delay_time }}"
-
           - condition: template
-            value_template: "{{ not wait.trigger }}"  # Only proceed if door did NOT close during delay
-
+            value_template: "{{ not wait.trigger }}"
           - service: "{{ domain }}.turn_on"
             target:
               entity_id: "{{ entity }}"
 
-      # Door closed
       - conditions:
           - condition: template
             value_template: "{{ new_state == 'off' }}"
