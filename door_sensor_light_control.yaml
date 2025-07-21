@@ -1,7 +1,8 @@
 blueprint:
-  name: Light or Switch Control by Door Sensor
+  name: Light or Switch Control by Door Sensor (with Delay)
   description: >
-    Turn a light or switch ON when the door opens, and OFF when the door closes.
+    Turns a light or switch ON when the door opens (after optional delay), and OFF when the door closes.
+    Prevents blinking if the door closes quickly.
   domain: automation
   input:
     door_sensor:
@@ -12,12 +13,22 @@ blueprint:
           domain: binary_sensor
     target_entity:
       name: Light or Switch
-      description: The light or switch to control
+      description: The light or switch to control.
       selector:
         entity:
           filter:
             - domain: light
             - domain: switch
+    delay_seconds:
+      name: Delay Before Turning On
+      description: Time to wait after door opens before turning on the light. If door closes during this time, the light will not turn on.
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 60
+          unit_of_measurement: seconds
+          mode: slider
 
 trigger:
   - platform: state
@@ -34,8 +45,34 @@ action:
       entity: !input target_entity
       domain: "{{ entity.split('.')[0] }}"
       new_state: "{{ trigger.to_state.state }}"
-  - service: "{{ domain }}.turn_{{ 'on' if new_state == 'on' else 'off' }}"
-    target:
-      entity_id: "{{ entity }}"
+      delay_time: !input delay_seconds
+
+  - choose:
+      # Door opened
+      - conditions:
+          - condition: template
+            value_template: "{{ new_state == 'on' }}"
+        sequence:
+          - wait_for_trigger:
+              - platform: state
+                entity_id: !input door_sensor
+                to: 'off'
+            timeout: "{{ delay_time }}"
+
+          - condition: template
+            value_template: "{{ not wait.trigger }}"  # Only proceed if door did NOT close during delay
+
+          - service: "{{ domain }}.turn_on"
+            target:
+              entity_id: "{{ entity }}"
+
+      # Door closed
+      - conditions:
+          - condition: template
+            value_template: "{{ new_state == 'off' }}"
+        sequence:
+          - service: "{{ domain }}.turn_off"
+            target:
+              entity_id: "{{ entity }}"
 
 mode: restart
