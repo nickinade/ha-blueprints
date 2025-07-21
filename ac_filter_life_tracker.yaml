@@ -1,23 +1,17 @@
 blueprint:
   name: AC Filter Life Tracker
-  description: Tracks AC runtime and counts down from 100h of filter life.
+  description: Track AC runtime in all modes except 'off' and update a timer.
   domain: automation
   input:
     ac_entity:
-      name: AC Device
-      description: The climate or switch entity of your air conditioner.
+      name: AC Entity
+      description: Your climate device (AC).
       selector:
         entity:
           domain: climate
-    filter_life:
-      name: Filter Life Number
-      description: The input_number entity tracking remaining hours.
-      selector:
-        entity:
-          domain: input_number
     runtime_timer:
       name: Runtime Timer
-      description: The timer entity used to track runtime intervals (set to 1 minute).
+      description: The timer that tracks AC runtime in 1-minute intervals.
       selector:
         entity:
           domain: timer
@@ -27,48 +21,23 @@ mode: single
 trigger:
   - platform: state
     entity_id: !input ac_entity
-    to: 'cooling'  # for climate; change to 'on' if using a switch
-    id: ac_on
-  - platform: state
-    entity_id: !input ac_entity
-    to: 'off'
-    id: ac_off
-  - platform: event
-    event_type: timer.finished
-    event_data:
-      entity_id: !input runtime_timer
-    id: timer_finished
 
 condition: []
 
 action:
   - choose:
       - conditions:
-          - condition: trigger
-            id: ac_on
+          - condition: template
+            value_template: "{{ trigger.to_state.state != 'off' }}"
         sequence:
           - service: timer.start
             target:
               entity_id: !input runtime_timer
 
       - conditions:
-          - condition: trigger
-            id: ac_off
+          - condition: template
+            value_template: "{{ trigger.to_state.state == 'off' }}"
         sequence:
           - service: timer.cancel
             target:
               entity_id: !input runtime_timer
-
-      - conditions:
-          - condition: trigger
-            id: timer_finished
-          - condition: numeric_state
-            entity_id: !input filter_life
-            above: 0
-        sequence:
-          - service: input_number.set_value
-            data:
-              entity_id: !input filter_life
-              value: >
-                {% set current = states(input.filter_life) | float %}
-                {{ (current - (1/60)) | round(2) }}
