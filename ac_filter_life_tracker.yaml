@@ -1,5 +1,5 @@
 blueprint:
-  name: AC Filter Life Tracker (Combined)
+  name: AC Filter Life Tracker v1
   description: >
     Tracks AC runtime in all modes except 'off' using a timer, and decreases
     filter life (input_number) by 1/60 hour every time the timer finishes.
@@ -70,9 +70,11 @@ action:
             entity_id: !input filter_life_number
             above: 0
         sequence:
+          - variables:
+              input_number_id: !input filter_life_number
           - service: input_number.set_value
             data:
               entity_id: !input filter_life_number
               value: >
-                {% set current = states(!input filter_life_number) | float %}
+                {% set current = states(input_number_id) | float %}
                 {{ (current - (1/60)) | round(2) }}
