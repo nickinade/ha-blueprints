@@ -29,10 +29,9 @@ trigger:
     from: 'on'
     to: 'off'
 
-variables:
-  entity_to_control: !input target_entity
-
 action:
+  - variables:
+      controlled_entity: !input target_entity
   - choose:
       - conditions:
           - condition: state
@@ -40,29 +39,29 @@ action:
             state: 'on'
         sequence:
           - service: >
-              {% if entity_to_control.startswith('light.') %}
+              {% if controlled_entity.startswith('light.') %}
                 light.turn_on
-              {% elif entity_to_control.startswith('switch.') %}
+              {% elif controlled_entity.startswith('switch.') %}
                 switch.turn_on
               {% else %}
                 homeassistant.turn_on
               {% endif %}
-            data:
-              entity_id: "{{ entity_to_control }}"
+            target:
+              entity_id: "{{ controlled_entity }}"
       - conditions:
           - condition: state
             entity_id: !input door_sensor
             state: 'off'
         sequence:
           - service: >
-              {% if entity_to_control.startswith('light.') %}
+              {% if controlled_entity.startswith('light.') %}
                 light.turn_off
-              {% elif entity_to_control.startswith('switch.') %}
+              {% elif controlled_entity.startswith('switch.') %}
                 switch.turn_off
               {% else %}
                 homeassistant.turn_off
               {% endif %}
-            data:
-              entity_id: "{{ entity_to_control }}"
+            target:
+              entity_id: "{{ controlled_entity }}"
 
 mode: restart
