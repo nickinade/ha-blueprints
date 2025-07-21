@@ -30,38 +30,46 @@ trigger:
     to: 'off'
 
 action:
-  - variables:
-      controlled_entity: !input target_entity
   - choose:
       - conditions:
           - condition: state
             entity_id: !input door_sensor
             state: 'on'
         sequence:
-          - service: >
-              {% if controlled_entity.startswith('light.') %}
-                light.turn_on
-              {% elif controlled_entity.startswith('switch.') %}
-                switch.turn_on
-              {% else %}
-                homeassistant.turn_on
-              {% endif %}
-            target:
-              entity_id: "{{ controlled_entity }}"
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: "{{ '!input target_entity'.startswith('light.') }}"
+                sequence:
+                  - service: light.turn_on
+                    target:
+                      entity_id: !input target_entity
+              - conditions:
+                  - condition: template
+                    value_template: "{{ '!input target_entity'.startswith('switch.') }}"
+                sequence:
+                  - service: switch.turn_on
+                    target:
+                      entity_id: !input target_entity
       - conditions:
           - condition: state
             entity_id: !input door_sensor
             state: 'off'
         sequence:
-          - service: >
-              {% if controlled_entity.startswith('light.') %}
-                light.turn_off
-              {% elif controlled_entity.startswith('switch.') %}
-                switch.turn_off
-              {% else %}
-                homeassistant.turn_off
-              {% endif %}
-            target:
-              entity_id: "{{ controlled_entity }}"
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: "{{ '!input target_entity'.startswith('light.') }}"
+                sequence:
+                  - service: light.turn_off
+                    target:
+                      entity_id: !input target_entity
+              - conditions:
+                  - condition: template
+                    value_template: "{{ '!input target_entity'.startswith('switch.') }}"
+                sequence:
+                  - service: switch.turn_off
+                    target:
+                      entity_id: !input target_entity
 
 mode: restart
