@@ -6,13 +6,11 @@ blueprint:
   input:
     door_sensor:
       name: Door Sensor
-      description: Binary sensor that detects door open/close state
       selector:
         entity:
           domain: binary_sensor
     target_entity:
       name: Light or Switch
-      description: Light or switch to control
       selector:
         entity:
           filter:
@@ -30,46 +28,13 @@ trigger:
     to: 'off'
 
 action:
-  - choose:
-      - conditions:
-          - condition: state
-            entity_id: !input door_sensor
-            state: 'on'
-        sequence:
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: "{{ '!input target_entity'.startswith('light.') }}"
-                sequence:
-                  - service: light.turn_on
-                    target:
-                      entity_id: !input target_entity
-              - conditions:
-                  - condition: template
-                    value_template: "{{ '!input target_entity'.startswith('switch.') }}"
-                sequence:
-                  - service: switch.turn_on
-                    target:
-                      entity_id: !input target_entity
-      - conditions:
-          - condition: state
-            entity_id: !input door_sensor
-            state: 'off'
-        sequence:
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: "{{ '!input target_entity'.startswith('light.') }}"
-                sequence:
-                  - service: light.turn_off
-                    target:
-                      entity_id: !input target_entity
-              - conditions:
-                  - condition: template
-                    value_template: "{{ '!input target_entity'.startswith('switch.') }}"
-                sequence:
-                  - service: switch.turn_off
-                    target:
-                      entity_id: !input target_entity
+  - variables:
+      target: !input target_entity
+      domain: "{{ target.split('.')[0] }}"
+      service: >
+        {{ domain }}.turn_{{ 'on' if is_state(blueprint.inputs.door_sensor, 'on') else 'off' }}
+  - service: "{{ service }}"
+    target:
+      entity_id: "{{ target }}"
 
 mode: restart
