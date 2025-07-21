@@ -3,7 +3,6 @@ blueprint:
   description: >
     Turns a light or switch ON when the door opens (after optional delay),
     and OFF when the door closes (after optional delay).
-    Each delay can be cancelled if the door state changes again during the wait.
   domain: automation
   input:
     door_sensor:
@@ -24,31 +23,27 @@ blueprint:
 
     delay_on_seconds:
       name: Delay Before Turning On
-      description: >
-        Number of seconds to wait after the door opens before turning on the light/switch.
-        If the door closes during this delay, the light will not turn on.
+      description: Seconds to wait after the door opens before turning on.
       default: 0
       selector:
         number:
           min: 0
           max: 60
           step: 1
-          unit_of_measurement: seconds
           mode: slider
+          unit_of_measurement: seconds
 
     delay_off_seconds:
       name: Delay Before Turning Off
-      description: >
-        Number of seconds to wait after the door closes before turning off the light/switch.
-        If the door opens again during this delay, the light will not turn off.
+      description: Seconds to wait after the door closes before turning off.
       default: 0
       selector:
         number:
           min: 0
           max: 60
           step: 1
-          unit_of_measurement: seconds
           mode: slider
+          unit_of_measurement: seconds
 
 trigger:
   - platform: state
@@ -69,7 +64,6 @@ action:
       delay_off: !input delay_off_seconds
 
   - choose:
-      # Door opened
       - conditions:
           - condition: template
             value_template: "{{ new_state == 'on' }}"
@@ -78,14 +72,13 @@ action:
               - platform: state
                 entity_id: !input door_sensor
                 to: 'off'
-            timeout: "{{ delay_on }}"
+            timeout: "{{ delay_on | int }}"
           - condition: template
             value_template: "{{ not wait.trigger }}"
           - service: "{{ domain }}.turn_on"
             target:
               entity_id: "{{ entity }}"
 
-      # Door closed
       - conditions:
           - condition: template
             value_template: "{{ new_state == 'off' }}"
@@ -94,7 +87,7 @@ action:
               - platform: state
                 entity_id: !input door_sensor
                 to: 'on'
-            timeout: "{{ delay_off }}"
+            timeout: "{{ delay_off | int }}"
           - condition: template
             value_template: "{{ not wait.trigger }}"
           - service: "{{ domain }}.turn_off"
