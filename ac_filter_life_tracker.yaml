@@ -1,6 +1,8 @@
 blueprint:
-  name: AC Filter Life Tracker
-  description: Track AC runtime in all modes except 'off' and update a timer.
+  name: AC Filter Life Tracker (Combined)
+  description: >
+    Tracks AC runtime in all modes except 'off' using a timer, and decreases
+    filter life (input_number) by 1/60 hour every time the timer finishes.
   domain: automation
   input:
     ac_entity:
@@ -15,18 +17,33 @@ blueprint:
       selector:
         entity:
           domain: timer
+    filter_life_number:
+      name: Filter Life Input Number
+      description: The input_number entity tracking remaining filter life in hours.
+      selector:
+        entity:
+          domain: input_number
 
 mode: single
 
 trigger:
   - platform: state
     entity_id: !input ac_entity
+    id: ac_state_change
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: !input runtime_timer
+    id: timer_finished
 
 condition: []
 
 action:
   - choose:
+      # Start timer if AC is not 'off'
       - conditions:
+          - condition: trigger
+            id: ac_state_change
           - condition: template
             value_template: "{{ trigger.to_state.state != 'off' }}"
         sequence:
@@ -34,10 +51,28 @@ action:
             target:
               entity_id: !input runtime_timer
 
+      # Cancel timer if AC is 'off'
       - conditions:
+          - condition: trigger
+            id: ac_state_change
           - condition: template
             value_template: "{{ trigger.to_state.state == 'off' }}"
         sequence:
           - service: timer.cancel
             target:
               entity_id: !input runtime_timer
+
+      # Decrease filter life by 1/60 hour when timer finishes
+      - conditions:
+          - condition: trigger
+            id: timer_finished
+          - condition: numeric_state
+            entity_id: !input filter_life_number
+            above: 0
+        sequence:
+          - service: input_number.set_value
+            data:
+              entity_id: !input filter_life_number
+              value: >
+                {% set current = states(!input filter_life_number) | float %}
+                {{ (current - (1/60)) | round(2) }}
