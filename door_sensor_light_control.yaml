@@ -1,7 +1,7 @@
 blueprint:
   name: Light or Switch Control by Door Sensor
   description: >
-    Turn a light or switch ON when the door opens and OFF when the door closes.
+    Turns a light or switch ON when the door is opened, OFF when closed.
   domain: automation
   input:
     door_sensor:
@@ -20,19 +20,12 @@ blueprint:
 trigger:
   - platform: state
     entity_id: !input door_sensor
-    from: 'off'
-    to: 'on'
-  - platform: state
-    entity_id: !input door_sensor
-    from: 'on'
-    to: 'off'
 
 action:
   - variables:
       target: !input target_entity
       domain: "{{ target.split('.')[0] }}"
-      service: >
-        {{ domain }}.turn_{{ 'on' if is_state(blueprint.inputs.door_sensor, 'on') else 'off' }}
+      service: "{{ domain }}.turn_{{ 'on' if trigger.to_state.state == 'on' else 'off' }}"
   - service: "{{ service }}"
     target:
       entity_id: "{{ target }}"
