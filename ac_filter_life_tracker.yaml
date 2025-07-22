@@ -1,80 +1,42 @@
 blueprint:
-  name: AC Filter Life Tracker v1.1
+  name: AC Filter Life Tracker v1.2
   description: >
-    Tracks AC runtime in all modes except 'off' using a timer, and decreases
-    filter life (input_number) by 1/60 hour every time the timer finishes.
+    Tracks AC filter life in minutes. Decreases filter life by 1 each minute
+    when AC is on (any state except 'off').
   domain: automation
   input:
-    ac_entity:
-      name: AC Entity
-      description: Your climate device (AC).
+    climate_entity:
+      name: AC Climate Entity
+      description: The climate entity representing the AC
       selector:
         entity:
           domain: climate
-    runtime_timer:
-      name: Runtime Timer
-      description: The timer that tracks AC runtime in 1-minute intervals.
-      selector:
-        entity:
-          domain: timer
-    filter_life_number:
+    filter_life_input:
       name: Filter Life Input Number
-      description: The input_number entity tracking remaining filter life in minutes.
+      description: The input_number that tracks remaining filter life (in minutes)
       selector:
         entity:
           domain: input_number
 
-mode: single
-
 trigger:
-  - platform: state
-    entity_id: !input ac_entity
-    id: ac_state_change
-  - platform: event
-    event_type: timer.finished
-    event_data:
-      entity_id: !input runtime_timer
-    id: timer_finished
+  - platform: time_pattern
+    minutes: "/1"
 
-condition: []
+condition:
+  - condition: state
+    entity_id: !input climate_entity
+    state_not: "off"
+  - condition: numeric_state
+    entity_id: !input filter_life_input
+    above: 0
 
 action:
-  - choose:
-      # Start timer if AC is not 'off'
-      - conditions:
-          - condition: trigger
-            id: ac_state_change
-          - condition: template
-            value_template: "{{ trigger.to_state.state != 'off' }}"
-        sequence:
-          - service: timer.start
-            target:
-              entity_id: !input runtime_timer
+  - service: input_number.set_value
+    data:
+      value: >
+        {% set current = states(input.filter_life_input) | int %}
+        {{ current - 1 }}
+    target:
+      entity_id: !input filter_life_input
 
-      # Cancel timer if AC is 'off'
-      - conditions:
-          - condition: trigger
-            id: ac_state_change
-          - condition: template
-            value_template: "{{ trigger.to_state.state == 'off' }}"
-        sequence:
-          - service: timer.cancel
-            target:
-              entity_id: !input runtime_timer
-
-      # Decrease filter life by 1 min when timer finishes
-      - conditions:
-          - condition: trigger
-            id: timer_finished
-          - condition: numeric_state
-            entity_id: !input filter_life_number
-            above: 0
-        sequence:
-          - variables:
-              input_number_id: !input filter_life_number
-          - service: input_number.set_value
-            data:
-              entity_id: !input filter_life_number
-              value: >
-                {% set current = states(input_number_id) | int %}
-                {{ current - 1 }}
+mode: single
