@@ -1,5 +1,5 @@
 blueprint:
-  name: AC Filter Life Tracker v1.6
+  name: AC Filter Life Tracker v1.7
   description: >
     Tracks AC filter life in minutes. Decreases filter life by 1 each minute
     when AC is on (any state except 'off').
