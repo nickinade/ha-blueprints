@@ -1,5 +1,5 @@
 blueprint:
-  name: AC Filter Life Tracker v1.3
+  name: AC Filter Life Tracker v1.4
   description: >
     Tracks AC filter life in minutes. Decreases filter life by 1 each minute
     when AC is on (any state except 'off').
@@ -24,7 +24,7 @@ trigger:
 
 condition:
   - condition: template
-    value_template: "{{ states(climate_entity) != 'off' }}"
+    value_template: "{{ states[inputs.climate_entity] != 'off' }}"
   - condition: numeric_state
     entity_id: !input filter_life_input
     above: 0
@@ -33,8 +33,8 @@ action:
   - service: input_number.set_value
     data:
       value: >
-        {% set current = states(input.filter_life_input) | int %}
-        {{ current - 1 }}
+        {% set current = states[inputs.filter_life_input] | float %}
+        {{ (current - 1) | round(0) }}
     target:
       entity_id: !input filter_life_input
 
