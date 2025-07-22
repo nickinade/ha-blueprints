@@ -1,5 +1,5 @@
 blueprint:
-  name: Light or Switch Control by Door Sensor (with On/Off Delay)
+  name: Light or Switch Control by Door Sensor v1.0
   description: >
     Turns a light or switch ON when the door opens (after optional delay),
     and OFF when the door closes (after optional delay).
@@ -28,7 +28,7 @@ blueprint:
       selector:
         number:
           min: 0
-          max: 60
+          max: 300
           step: 1
           mode: slider
           unit_of_measurement: seconds
@@ -40,7 +40,7 @@ blueprint:
       selector:
         number:
           min: 0
-          max: 60
+          max: 300
           step: 1
           mode: slider
           unit_of_measurement: seconds
