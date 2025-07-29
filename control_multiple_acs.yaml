@@ -1,5 +1,5 @@
 blueprint:
-  name: Control Multiple ACs
+  name: Control Multiple ACs v1.0
   description: Set mode and temperature for selected ACs
   domain: script
   input:
@@ -10,7 +10,6 @@ blueprint:
         target:
           entity:
             domain: climate
-            multiple: true
 
     hvac_mode:
       name: Mode
@@ -24,7 +23,7 @@ blueprint:
             - heat
             - dry
             - fan_only
-            - off
+            - "off"
 
     target_temp:
       name: Temperature
