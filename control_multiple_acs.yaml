@@ -1,11 +1,11 @@
 blueprint:
-  name: Control Multiple ACs v1.1
-  description: Set HVAC mode and temperature on multiple climate devices
+  name: Control Multiple ACs v1.2
+  description: Set HVAC mode and temperature on selected AC units
   domain: script
   input:
     ac_targets:
       name: AC Units
-      description: Choose the climate entities (ACs) to control
+      description: Select the ACs to control
       selector:
         target:
           entity:
@@ -26,8 +26,8 @@ blueprint:
             - "off"
 
     target_temp:
-      name: Target Temperature
-      description: Desired temperature to set
+      name: Temperature
+      description: Temperature to set on the ACs
       default: 24
       selector:
         number:
@@ -41,5 +41,5 @@ sequence:
   - service: climate.set_temperature
     target: !input ac_targets
     data:
-      hvac_mode: !input hvac_mode
       temperature: !input target_temp
+      hvac_mode: !input hvac_mode
