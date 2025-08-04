@@ -1,6 +1,6 @@
 blueprint:
-  name: Control Multiple ACs v1.3
-  description: Set HVAC mode and whole-number temperature on selected AC units
+  name: Control Multiple ACs v1.4
+  description: Set HVAC mode and temperature for selected ACs
   domain: script
   input:
     ac_targets:
@@ -26,15 +26,16 @@ blueprint:
             - "off"
 
     target_temp:
-      name: Temperature
-      description: Temperature to set (°C)
-      default: 24
+      name: Temperature (optional)
+      description: Leave empty to keep the current temperature
+      default:
       selector:
         number:
           min: 16
           max: 30
           step: 1
           unit_of_measurement: "°C"
+          mode: box
 
 mode: single
 sequence:
@@ -43,7 +44,12 @@ sequence:
     data:
       hvac_mode: !input hvac_mode
 
-  - service: climate.set_temperature
-    target: !input ac_targets
-    data:
-      temperature: !input target_temp
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ states('input.target_temp') | string != '' }}"
+        sequence:
+          - service: climate.set_temperature
+            target: !input ac_targets
+            data:
+              temperature: !input target_temp
