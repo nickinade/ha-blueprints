@@ -1,45 +1,56 @@
 blueprint:
-  name: AC Filter Life Tracker v1.7
-  description: >
-    Tracks AC filter life in minutes. Decreases filter life by 1 each minute
-    when AC is on (any state except 'off').
-  domain: automation
+  name: Control Multiple ACs v1.8
+  description: Set HVAC mode and temperature for selected AC units
+  domain: script
   input:
-    climate_entity:
-      name: AC Climate Entity
-      description: The climate entity representing the AC
+    ac_targets:
+      name: AC Units
+      description: Select the AC devices to control
       selector:
-        entity:
-          domain: climate
-    filter_life_input:
-      name: Filter Life Input Number
-      description: The input_number that tracks remaining filter life (in minutes)
+        target:
+          entity:
+            domain: climate
+
+    hvac_mode:
+      name: HVAC Mode
+      description: Mode to set for the ACs
+      default: cool
       selector:
-        entity:
-          domain: input_number
+        select:
+          options:
+            - "auto"
+            - "cool"
+            - "heat"
+            - "dry"
+            - "fan_only"
+            - "off"
 
-trigger:
-  - platform: time_pattern
-    minutes: "/1"
-
-variables:
-  ac_entity: !input climate_entity
-  life_entity: !input filter_life_input
-
-condition:
-  - condition: template
-    value_template: "{{ states(ac_entity) != 'off' }}"
-  - condition: numeric_state
-    entity_id: !input filter_life_input
-    above: 0
-
-action:
-  - service: input_number.set_value
-    data:
-      value: >
-        {% set current = states(life_entity) | float %}
-        {{ (current - 1) | round(0) }}
-    target:
-      entity_id: !input filter_life_input
+    target_temp:
+      name: Temperature (optional)
+      description: Leave empty to keep the current temperature
+      default:
+      selector:
+        number:
+          min: 16
+          max: 30
+          step: 1
+          mode: box
+          unit_of_measurement: "°C"
 
 mode: single
+sequence:
+  - service: climate.set_hvac_mode
+    target: !input ac_targets
+    data:
+      hvac_mode: !input hvac_mode
+
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ target_temp is defined and target_temp is not none }}
+        sequence:
+          - service: climate.set_temperature
+            target: !input ac_targets
+            data:
+              temperature: "{{ target_temp | float }}"
