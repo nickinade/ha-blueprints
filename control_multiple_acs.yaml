@@ -1,5 +1,5 @@
 blueprint:
-  name: Control Multiple ACs v1.8
+  name: Control Multiple ACs v1.7
   description: Set HVAC mode and temperature for selected AC units
   domain: script
   input:
