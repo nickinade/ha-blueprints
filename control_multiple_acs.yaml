@@ -1,7 +1,7 @@
 blueprint:
   name: Control Multiple ACs v1.8
-  description: Set HVAC mode and/or temperature for selected AC units
-  domain: automation
+  description: Set HVAC mode and temperature for selected AC units
+  domain: script
   input:
     ac_targets:
       name: AC Units
@@ -12,9 +12,9 @@ blueprint:
             domain: climate
 
     hvac_mode:
-      name: HVAC Mode (optional)
-      description: Leave empty to keep current mode
-      default:
+      name: HVAC Mode
+      description: Mode to set for the ACs
+      default: cool
       selector:
         select:
           options:
@@ -24,8 +24,6 @@ blueprint:
             - "dry"
             - "fan_only"
             - "off"
-          custom_value: false
-          mode: dropdown
 
     target_temp:
       name: Temperature (optional)
@@ -39,30 +37,20 @@ blueprint:
           mode: box
           unit_of_measurement: "°C"
 
-trigger:
-  - platform: event
-    event_type: automation_trigger
-
-action:
-  - choose:
-      - conditions:
-          - condition: template
-            value_template: >
-              {{ hvac_mode is defined and hvac_mode is not none and hvac_mode != '' }}
-        sequence:
-          - service: climate.set_hvac_mode
-            target: !input ac_targets
-            data:
-              hvac_mode: !input hvac_mode
+mode: single
+sequence:
+  - service: climate.set_hvac_mode
+    target: !input ac_targets
+    data:
+      hvac_mode: !input hvac_mode
 
   - choose:
       - conditions:
           - condition: template
             value_template: >
-              {{ target_temp is defined and target_temp is not none and target_temp != '' }}
+              {{ target_temp is defined and target_temp is not none }}
         sequence:
           - service: climate.set_temperature
             target: !input ac_targets
             data:
               temperature: "{{ target_temp | float }}"
-mode: single
