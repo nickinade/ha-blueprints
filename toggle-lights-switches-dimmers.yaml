@@ -1,23 +1,26 @@
 blueprint:
-  name: Toggle Group of Entities v1.0
-  description: Toggle multiple lights, switches, and dimmers with one trigger
+  name: Toggle & Sync Group of Entities v1.1.
+  description: Toggle and synchronize multiple lights, switches, and dimmers with one trigger entity.
   domain: automation
   input:
     target_entities:
-      name: Entities
-      description: Select lights, switches, and dimmers to toggle
+      name: Entities to control
+      description: Select lights, switches, and dimmers to toggle & sync
       selector:
         entity:
           multiple: true
-          domain: 
+          domain:
             - light
             - switch
 
     trigger_entity:
       name: Trigger entity
-      description: The entity whose state change will trigger the toggle (e.g., a button)
+      description: The entity (e.g., button, switch) that will toggle the group and stay in sync
       selector:
         entity:
+          domain:
+            - light
+            - switch
 
 mode: single
 max_exceeded: silent
@@ -25,24 +28,58 @@ max_exceeded: silent
 trigger:
   - platform: state
     entity_id: !input trigger_entity
+  - platform: state
+    entity_id: !input target_entities
 
 action:
   - variables:
       entities: !input target_entities
+      trigger_entity: !input trigger_entity
   - choose:
+      # If trigger was changed manually → toggle group
       - conditions:
           - condition: template
             value_template: >
-              {{ expand(entities) | selectattr('state', 'eq', 'on') | list | count > 0 }}
+              {{ trigger.entity_id == trigger_entity }}
         sequence:
-          - service: homeassistant.turn_off
-            target:
-              entity_id: "{{ entities }}"
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: !input trigger_entity
+                    state: "on"
+                sequence:
+                  - service: homeassistant.turn_on
+                    target:
+                      entity_id: "{{ entities }}"
+              - conditions:
+                  - condition: state
+                    entity_id: !input trigger_entity
+                    state: "off"
+                sequence:
+                  - service: homeassistant.turn_off
+                    target:
+                      entity_id: "{{ entities }}"
+
+      # If a group member changed → sync trigger entity
       - conditions:
           - condition: template
             value_template: >
-              {{ expand(entities) | selectattr('state', 'eq', 'on') | list | count == 0 }}
+              {{ trigger.entity_id != trigger_entity }}
         sequence:
-          - service: homeassistant.turn_on
-            target:
-              entity_id: "{{ entities }}"
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: >
+                      {{ expand(entities) | selectattr('state','eq','on') | list | count > 0 }}
+                sequence:
+                  - service: homeassistant.turn_on
+                    target:
+                      entity_id: "{{ trigger_entity }}"
+              - conditions:
+                  - condition: template
+                    value_template: >
+                      {{ expand(entities) | selectattr('state','eq','on') | list | count == 0 }}
+                sequence:
+                  - service: homeassistant.turn_off
+                    target:
+                      entity_id: "{{ trigger_entity }}"
