@@ -1,0 +1,48 @@
+blueprint:
+  name: Toggle Group of Entities v1.0
+  description: Toggle multiple lights, switches, and dimmers with one trigger
+  domain: automation
+  input:
+    target_entities:
+      name: Entities
+      description: Select lights, switches, and dimmers to toggle
+      selector:
+        entity:
+          multiple: true
+          domain: 
+            - light
+            - switch
+
+    trigger_entity:
+      name: Trigger entity
+      description: The entity whose state change will trigger the toggle (e.g., a button)
+      selector:
+        entity:
+
+mode: single
+max_exceeded: silent
+
+trigger:
+  - platform: state
+    entity_id: !input trigger_entity
+
+action:
+  - variables:
+      entities: !input target_entities
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ expand(entities) | selectattr('state', 'eq', 'on') | list | count > 0 }}
+        sequence:
+          - service: homeassistant.turn_off
+            target:
+              entity_id: "{{ entities }}"
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ expand(entities) | selectattr('state', 'eq', 'on') | list | count == 0 }}
+        sequence:
+          - service: homeassistant.turn_on
+            target:
+              entity_id: "{{ entities }}"
