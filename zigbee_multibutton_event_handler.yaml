@@ -1,0 +1,116 @@
+blueprint:
+  name: Zigbee Multi-Button Event Handler (up to 6 buttons)
+  description: Handle multiple ZHA button press events per device with separate actions, up to 6 buttons
+  domain: automation
+  input:
+    device:
+      name: Zigbee Device
+      description: Select the Zigbee device to listen for events
+      selector:
+        device:
+          integration: zha
+    buttons:
+      name: Buttons Configuration
+      description: List of buttons with endpoints, commands and actions (max 6)
+      selector:
+        object:
+          multiple: true
+          max: 6
+          mapping:
+            name:
+              name: Button Name
+              description: Friendly name for this button
+              selector:
+                text:
+            endpoint_id:
+              name: Endpoint ID
+              description: Zigbee endpoint number for this button
+              selector:
+                number:
+                  min: 1
+                  max: 20
+            commands:
+              name: Commands and Actions
+              description: List of commands with actions for this button
+              selector:
+                object:
+                  multiple: true
+                  mapping:
+                    command:
+                      name: Command
+                      description: ZHA command to listen for (e.g. remote_button_short_press)
+                      selector:
+                        text:
+                    action:
+                      name: Action
+                      description: Action to perform when this command occurs
+                      selector:
+                        action: {}
+
+trigger:
+  - platform: event
+    event_type: zha_event
+
+condition:
+  - condition: template
+    # Check that event is from our device and one of the configured buttons and commands
+    value_template: >
+      {% set dev = trigger.event.data.device_id %}
+      {% set ep = trigger.event.data.endpoint_id %}
+      {% set cmd = trigger.event.data.command %}
+      {% if dev != device.id %}
+        {{ false }}
+      {% else %}
+        {% for btn in buttons.values() %}
+          {% if btn.endpoint_id == ep %}
+            {% for c in btn.commands.values() %}
+              {% if c.command == cmd %}
+                {{ true }}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+  - condition: template
+    # Only proceed if previous condition matched (redundant safety)
+    value_template: >
+      {{ true }}
+
+action:
+  - variables:
+      ep: "{{ trigger.event.data.endpoint_id }}"
+      cmd: "{{ trigger.event.data.command }}"
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: >
+              {% set ep = ep %}
+              {% set cmd = cmd %}
+              {% set buttons = buttons.values() %}
+              {% set found = false %}
+              {% for btn in buttons %}
+                {% if btn.endpoint_id == ep %}
+                  {% for c in btn.commands.values() %}
+                    {% if c.command == cmd %}
+                      {% set found = c.action %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+              {{ found is not none }}
+        sequence:
+          - variables:
+              action_to_run: >
+                {% set ep = ep %}
+                {% set cmd = cmd %}
+                {% set buttons = buttons.values() %}
+                {% for btn in buttons %}
+                  {% if btn.endpoint_id == ep %}
+                    {% for c in btn.commands.values() %}
+                      {% if c.command == cmd %}
+                        {{ c.action }}
+                      {% endif %}
+                    {% endfor %}
+                  {% endif %}
+                {% endfor %}
+          - "{{ action_to_run }}"
