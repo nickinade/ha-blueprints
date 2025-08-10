@@ -1,5 +1,5 @@
 blueprint:
-  name: ZHA Scene Switch Handler (up to 6 buttons, fixed commands) v3.1
+  name: ZHA Scene Switch Handler (up to 6 buttons, fixed commands) v3.2
   description: >
     Handle ZHA scene switch button presses (up to 6 buttons).
     Each button supports short_press, long_press, and double_press events with fixed command names.
@@ -13,7 +13,6 @@ blueprint:
         device:
           integration: zha
 
-    # Button 1 Section
     button1_section:
       name: "Button 1"
       default: {}
@@ -41,7 +40,6 @@ blueprint:
         action: {}
       description: Action to execute on Button 1 double press
 
-    # Button 2 Section
     button2_section:
       name: "Button 2"
       default: {}
@@ -69,7 +67,6 @@ blueprint:
         action: {}
       description: Action to execute on Button 2 double press
 
-    # Button 3 Section
     button3_section:
       name: "Button 3"
       default: {}
@@ -97,7 +94,6 @@ blueprint:
         action: {}
       description: Action to execute on Button 3 double press
 
-    # Button 4 Section
     button4_section:
       name: "Button 4"
       default: {}
@@ -125,7 +121,6 @@ blueprint:
         action: {}
       description: Action to execute on Button 4 double press
 
-    # Button 5 Section
     button5_section:
       name: "Button 5"
       default: {}
@@ -153,7 +148,6 @@ blueprint:
         action: {}
       description: Action to execute on Button 5 double press
 
-    # Button 6 Section
     button6_section:
       name: "Button 6"
       default: {}
@@ -197,16 +191,17 @@ condition:
 action:
   - service: persistent_notification.create
     data:
-      title: "Debug ZHA Event and Device Attributes"
+      title: "Debug ZHA Event and Blueprint Inputs"
       message: >
-        event.device_ieee raw: {{ trigger.event.data.device_ieee | string }}
-        event.device_ieee normalized: {{ trigger.event.data.device_ieee | replace(":", "") | lower }}
-        blueprint.ieee raw: {{ state_attr(blueprint.inputs.target_device.entity_id, 'ieee') | string }}
-        blueprint.ieee normalized: {{ state_attr(blueprint.inputs.target_device.entity_id, 'ieee') | replace(":", "") | lower }}
-        endpoint_id: {{ trigger.event.data.endpoint_id | string }}
-        cluster_id: {{ trigger.event.data.cluster_id | string }}
-        command: {{ trigger.event.data.command | string }}
-        args: {{ trigger.event.data.args | string }}
+        blueprint defined: {{ blueprint is defined }}
+        trigger defined: {{ trigger is defined }}
+        trigger.event defined: {{ trigger.event is defined }}
+        event.device_ieee raw: {{ trigger.event.data.device_ieee if trigger and trigger.event else 'N/A' }}
+        event.device_ieee normalized: {{ trigger.event.data.device_ieee | replace(":", "") | lower if trigger and trigger.event else 'N/A' }}
+        blueprint.ieee raw: {{ state_attr(blueprint.inputs.target_device.entity_id, 'ieee') if blueprint else 'N/A' }}
+        blueprint.ieee normalized: {{ state_attr(blueprint.inputs.target_device.entity_id, 'ieee') | replace(":", "") | lower if blueprint else 'N/A' }}
+        event.endpoint_id: {{ trigger.event.data.endpoint_id if trigger and trigger.event else 'N/A' }}
+        event.command: {{ trigger.event.data.command if trigger and trigger.event else 'N/A' }}
 
   - choose:
       # Button 1
