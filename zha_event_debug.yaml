@@ -1,0 +1,28 @@
+blueprint:
+  name: ZHA Scene Switch Debug v1.4
+  description: Отображает IEEE адреса целевого устройства и события для отладки
+  domain: automation
+  input:
+    target_device:
+      name: Целевое ZHA устройство
+      description: Выберите устройство ZHA для отслеживания
+      selector:
+        device:
+          integration: zha
+
+trigger:
+  - platform: event
+    event_type: zha_event
+
+condition: []
+
+action:
+  - service: persistent_notification.create
+    data:
+      title: "ZHA Event Debug"
+      message: >
+        Целевое устройство IEEE: {{ state_attr(blueprint.inputs.target_device.entity_id, 'ieee') }}
+        Событие IEEE: {{ trigger.event.data.device_ieee }}
+        endpoint_id: {{ trigger.event.data.endpoint_id }}
+        cluster_id: {{ trigger.event.data.cluster_id }}
+        command: {{ trigger.event.data.command }}
