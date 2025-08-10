@@ -1,5 +1,5 @@
 blueprint:
-  name: ZHA Scene Switch Handler (up to 6 buttons) v1.5
+  name: ZHA Scene Switch Handler (up to 6 buttons) v1.6
   description: Handle ZHA scene switch button presses (supports up to 6 buttons with multiple press types)
   domain: automation
   input:
@@ -113,7 +113,7 @@ condition:
     value_template: >
       {% if blueprint is defined %}
         {{ trigger is defined and trigger.event is defined and
-           trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+           trigger.event.data.device_ieee == blueprint.inputs.target_device.identifiers[0][1] }}
       {% else %}
         false
       {% endif %}
