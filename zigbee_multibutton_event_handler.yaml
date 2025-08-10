@@ -1,11 +1,11 @@
 blueprint:
-  name: ZHA Scene Switch Handler (up to 6 buttons, device_id check) v3.6
+  name: ZHA Scene Switch Handler (up to 6 buttons, device_id check) v3.7
   description: >
     Handle ZHA scene switch button presses (up to 6 buttons).
     Each button supports short_press, long_press, and double_press events with fixed commands.
     User sets actions for each button and event type.
   domain: automation
-  input:
+  inputs:
     target_device:
       name: Zigbee Scene Switch
       description: Select your ZHA scene switch
