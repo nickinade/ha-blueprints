@@ -1,5 +1,5 @@
 blueprint:
-  name: ZHA Scene Switch Debug v1.6
+  name: ZHA Scene Switch Debug v1.7
   description: Отображает IEEE адреса целевого устройства и события для отладки
   domain: automation
   input:
