@@ -1,6 +1,6 @@
 blueprint:
-  name: Toggle & Sync Group of Entities v1.1.
-  description: Toggle and synchronize multiple lights, switches, and dimmers with one trigger entity.
+  name: Toggle & Sync Group of Entities v1.2
+  description: Toggle and synchronize multiple lights, switches, and dimmers with one trigger entity. Sets dimmers to 100% brightness when turned on.
   domain: automation
   input:
     target_entities:
@@ -35,8 +35,9 @@ action:
   - variables:
       entities: !input target_entities
       trigger_entity: !input trigger_entity
+
   - choose:
-      # If trigger was changed manually → toggle group
+      # Если изменён триггер — переключаем группу
       - conditions:
           - condition: template
             value_template: >
@@ -48,9 +49,16 @@ action:
                     entity_id: !input trigger_entity
                     state: "on"
                 sequence:
+                  - service: light.turn_on
+                    data:
+                      brightness_pct: 100
+                    target:
+                      entity_id: >
+                        {{ expand(entities) | selectattr('entity_id','search','^light\.') | map(attribute='entity_id') | list }}
                   - service: homeassistant.turn_on
                     target:
-                      entity_id: "{{ entities }}"
+                      entity_id: >
+                        {{ expand(entities) | rejectattr('entity_id','search','^light\.') | map(attribute='entity_id') | list }}
               - conditions:
                   - condition: state
                     entity_id: !input trigger_entity
@@ -60,7 +68,7 @@ action:
                     target:
                       entity_id: "{{ entities }}"
 
-      # If a group member changed → sync trigger entity
+      # Если изменился кто-то из группы — синхронизируем триггер
       - conditions:
           - condition: template
             value_template: >
