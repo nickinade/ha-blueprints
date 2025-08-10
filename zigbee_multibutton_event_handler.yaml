@@ -1,144 +1,153 @@
 blueprint:
-  name: Multi-Button Switch Scene Handler
-  description: Handle up to 6 buttons on a scene-capable switch, each with custom actions.
+  name: ZHA Scene Switch Handler (up to 6 buttons)
+  description: Handle ZHA scene switch button presses (supports up to 6 buttons with multiple press types)
   domain: automation
   input:
     target_device:
-      name: Switch device
-      description: Select your multi-button switch device
+      name: Zigbee Scene Switch
+      description: Select your ZHA scene switch
       selector:
-        device: {}
+        device:
+          integration: zha
 
-    # Buttons 1–6 definitions
-    button_1_event:
-      name: Button 1 Event
-      description: Event type for button 1 (e.g. short_press, double_press, hold)
-      default: short_press
+    # Inputs for each button
+    button1_command:
+      name: Button 1 Command
+      description: Select press type for Button 1
+      default: remote_button_short_press
       selector:
-        text: {}
-    button_1_action:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button1_action:
       name: Button 1 Action
-      description: Action to perform when Button 1 Event occurs
+      description: Action to run when Button 1 is pressed
       default: []
       selector:
         action: {}
 
-    button_2_event:
-      name: Button 2 Event
-      default: short_press
+    button2_command:
+      name: Button 2 Command
+      default: remote_button_short_press
       selector:
-        text: {}
-    button_2_action:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button2_action:
       name: Button 2 Action
       default: []
       selector:
         action: {}
 
-    button_3_event:
-      name: Button 3 Event
-      default: short_press
+    button3_command:
+      name: Button 3 Command
+      default: remote_button_short_press
       selector:
-        text: {}
-    button_3_action:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button3_action:
       name: Button 3 Action
       default: []
       selector:
         action: {}
 
-    button_4_event:
-      name: Button 4 Event
-      default: short_press
+    button4_command:
+      name: Button 4 Command
+      default: remote_button_short_press
       selector:
-        text: {}
-    button_4_action:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button4_action:
       name: Button 4 Action
       default: []
       selector:
         action: {}
 
-    button_5_event:
-      name: Button 5 Event
-      default: short_press
+    button5_command:
+      name: Button 5 Command
+      default: remote_button_short_press
       selector:
-        text: {}
-    button_5_action:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button5_action:
       name: Button 5 Action
       default: []
       selector:
         action: {}
 
-    button_6_event:
-      name: Button 6 Event
-      default: short_press
+    button6_command:
+      name: Button 6 Command
+      default: remote_button_short_press
       selector:
-        text: {}
-    button_6_action:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button6_action:
       name: Button 6 Action
       default: []
       selector:
         action: {}
 
 mode: restart
-max_exceeded: silent
 
 trigger:
   - platform: event
     event_type: zha_event
-    event_data:
-      device_id: !input target_device
+
+condition:
+  - condition: template
+    value_template: >
+      {{ trigger.event.data.device_id == (device_id := inputs.target_device) }}
 
 action:
   - choose:
       - conditions:
           - condition: template
             value_template: >
-              {{ trigger.event.data.command == (inputs.button_1_event | default('')) }}
-          - condition: template
-            value_template: >
-              {{ trigger.event.data.endpoint_id == 1 }}
-        sequence: !input button_1_action
+              {{ trigger.event.data.endpoint_id == 1 and trigger.event.data.command == inputs.button1_command }}
+        sequence: !input button1_action
 
       - conditions:
           - condition: template
             value_template: >
-              {{ trigger.event.data.command == (inputs.button_2_event | default('')) }}
-          - condition: template
-            value_template: >
-              {{ trigger.event.data.endpoint_id == 2 }}
-        sequence: !input button_2_action
+              {{ trigger.event.data.endpoint_id == 2 and trigger.event.data.command == inputs.button2_command }}
+        sequence: !input button2_action
 
       - conditions:
           - condition: template
             value_template: >
-              {{ trigger.event.data.command == (inputs.button_3_event | default('')) }}
-          - condition: template
-            value_template: >
-              {{ trigger.event.data.endpoint_id == 3 }}
-        sequence: !input button_3_action
+              {{ trigger.event.data.endpoint_id == 3 and trigger.event.data.command == inputs.button3_command }}
+        sequence: !input button3_action
 
       - conditions:
           - condition: template
             value_template: >
-              {{ trigger.event.data.command == (inputs.button_4_event | default('')) }}
-          - condition: template
-            value_template: >
-              {{ trigger.event.data.endpoint_id == 4 }}
-        sequence: !input button_4_action
+              {{ trigger.event.data.endpoint_id == 4 and trigger.event.data.command == inputs.button4_command }}
+        sequence: !input button4_action
 
       - conditions:
           - condition: template
             value_template: >
-              {{ trigger.event.data.command == (inputs.button_5_event | default('')) }}
-          - condition: template
-            value_template: >
-              {{ trigger.event.data.endpoint_id == 5 }}
-        sequence: !input button_5_action
+              {{ trigger.event.data.endpoint_id == 5 and trigger.event.data.command == inputs.button5_command }}
+        sequence: !input button5_action
 
       - conditions:
           - condition: template
             value_template: >
-              {{ trigger.event.data.command == (inputs.button_6_event | default('')) }}
-          - condition: template
-            value_template: >
-              {{ trigger.event.data.endpoint_id == 6 }}
-        sequence: !input button_6_action
+              {{ trigger.event.data.endpoint_id == 6 and trigger.event.data.command == inputs.button6_command }}
+        sequence: !input button6_action
