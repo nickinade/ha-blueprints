@@ -1,5 +1,5 @@
 blueprint:
-  name: ZHA Scene Switch Handler (up to 6 buttons) v2.0
+  name: ZHA Scene Switch Handler (up to 6 buttons) v2.1
   description: Handle ZHA scene switch button presses (supports up to 6 buttons with multiple press types)
   domain: automation
   input:
@@ -124,12 +124,16 @@ condition:
 action:
   - service: persistent_notification.create
     data:
-      title: "Debug ZHA Device IEEE values"
+      title: "Debug ZHA Event and Device Attributes"
       message: >
         event.device_ieee raw: {{ trigger.event.data.device_ieee | string }}
         event.device_ieee normalized: {{ trigger.event.data.device_ieee | replace(":", "") | lower }}
         blueprint.ieee raw: {{ state_attr(blueprint.inputs.target_device.entity_id, 'ieee') | string }}
         blueprint.ieee normalized: {{ state_attr(blueprint.inputs.target_device.entity_id, 'ieee') | replace(":", "") | lower }}
+        endpoint_id: {{ trigger.event.data.endpoint_id | string }}
+        cluster_id: {{ trigger.event.data.cluster_id | string }}
+        command: {{ trigger.event.data.command | string }}
+        args: {{ trigger.event.data.args | string }}
 
   - choose:
       - conditions:
