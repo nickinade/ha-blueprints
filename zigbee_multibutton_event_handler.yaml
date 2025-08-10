@@ -1,5 +1,5 @@
 blueprint:
-  name: ZHA Scene Switch Handler (up to 6 buttons) v1.9
+  name: ZHA Scene Switch Handler (up to 6 buttons) v2.0
   description: Handle ZHA scene switch button presses (supports up to 6 buttons with multiple press types)
   domain: automation
   input:
@@ -112,8 +112,10 @@ condition:
   - condition: template
     value_template: >
       {% if blueprint is defined and trigger is defined and trigger.event is defined %}
-        {% set event_ieee = trigger.event.data.device_ieee %}
-        {% set device_ieee = state_attr(blueprint.inputs.target_device.entity_id, 'ieee') %}
+        {% set event_ieee_raw = trigger.event.data.device_ieee | string %}
+        {% set device_ieee_raw = state_attr(blueprint.inputs.target_device.entity_id, 'ieee') | string %}
+        {% set event_ieee = event_ieee_raw | replace(":", "") | lower %}
+        {% set device_ieee = device_ieee_raw | replace(":", "") | lower %}
         {{ event_ieee == device_ieee }}
       {% else %}
         false
@@ -122,10 +124,12 @@ condition:
 action:
   - service: persistent_notification.create
     data:
-      title: "Debug ZHA Device"
+      title: "Debug ZHA Device IEEE values"
       message: >
-        event.device_ieee: {{ trigger.event.data.device_ieee | string }}
-        blueprint.ieee: {{ state_attr(blueprint.inputs.target_device.entity_id, 'ieee') | string }}
+        event.device_ieee raw: {{ trigger.event.data.device_ieee | string }}
+        event.device_ieee normalized: {{ trigger.event.data.device_ieee | replace(":", "") | lower }}
+        blueprint.ieee raw: {{ state_attr(blueprint.inputs.target_device.entity_id, 'ieee') | string }}
+        blueprint.ieee normalized: {{ state_attr(blueprint.inputs.target_device.entity_id, 'ieee') | replace(":", "") | lower }}
 
   - choose:
       - conditions:
