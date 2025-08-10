@@ -21,7 +21,7 @@ action:
     data:
       title: "ZHA Event Debug"
       message: >
-        {% set target_id = blueprint.inputs.target_device.id %}
+        {% set target_id = !input target_device.id %}
         Целевое устройство IEEE: {{ target_id }}
         Событие IEEE: {{ trigger.event.data.device_ieee }}
         endpoint_id: {{ trigger.event.data.endpoint_id }}
