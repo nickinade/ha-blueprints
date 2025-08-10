@@ -1,5 +1,5 @@
 blueprint:
-  name: ZHA Scene Switch Handler (up to 6 buttons, fixed commands) v2.9
+  name: ZHA Scene Switch Handler (up to 6 buttons, fixed commands) v3.0
   description: >
     Handle ZHA scene switch button presses (up to 6 buttons).
     Each button supports short_press, long_press, and double_press events with fixed command names.
@@ -125,10 +125,23 @@ condition:
   - condition: template
     value_template: >
       {% set event_ieee = trigger.event.data.device_ieee | replace(":", "") | lower %}
-      {% set device_ieee = state_attr(inputs.target_device.entity_id, 'ieee') | replace(":", "") | lower %}
+      {% set device_ieee = state_attr(blueprint.inputs.target_device.entity_id, 'ieee') | replace(":", "") | lower %}
       {{ event_ieee == device_ieee }}
 
 action:
+  - service: persistent_notification.create
+    data:
+      title: "Debug ZHA Event and Device Attributes"
+      message: >
+        event.device_ieee raw: {{ trigger.event.data.device_ieee | string }}
+        event.device_ieee normalized: {{ trigger.event.data.device_ieee | replace(":", "") | lower }}
+        blueprint.ieee raw: {{ state_attr(blueprint.inputs.target_device.entity_id, 'ieee') | string }}
+        blueprint.ieee normalized: {{ state_attr(blueprint.inputs.target_device.entity_id, 'ieee') | replace(":", "") | lower }}
+        endpoint_id: {{ trigger.event.data.endpoint_id | string }}
+        cluster_id: {{ trigger.event.data.cluster_id | string }}
+        command: {{ trigger.event.data.command | string }}
+        args: {{ trigger.event.data.args | string }}
+
   - choose:
       # Button 1
       - conditions:
