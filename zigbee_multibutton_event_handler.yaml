@@ -1,8 +1,9 @@
 blueprint:
-  name: ZHA Scene Switch Handler (up to 6 buttons, multi-event) v2.8
+  name: ZHA Scene Switch Handler (up to 6 buttons, fixed commands) v2.9
   description: >
-    Handle ZHA scene switch button presses (supports up to 6 buttons).
-    For each button you can set actions for short, long, and double press separately.
+    Handle ZHA scene switch button presses (up to 6 buttons).
+    Each button supports short_press, long_press, and double_press events with fixed command names.
+    User configures only actions for each event per button.
   domain: automation
   input:
     target_device:
@@ -12,276 +13,102 @@ blueprint:
         device:
           integration: zha
 
-    # Button 1
-    button1_short_command:
-      name: Button 1 Short Press Command
-      default: remote_button_short_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
+    # Button 1 actions
     button1_short_action:
       name: Button 1 Short Press Action
       default: []
       selector:
         action: {}
-
-    button1_long_command:
-      name: Button 1 Long Press Command
-      default: remote_button_long_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
     button1_long_action:
       name: Button 1 Long Press Action
       default: []
       selector:
         action: {}
-
-    button1_double_command:
-      name: Button 1 Double Press Command
-      default: remote_button_double_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
     button1_double_action:
       name: Button 1 Double Press Action
       default: []
       selector:
         action: {}
 
-    # Button 2
-    button2_short_command:
-      name: Button 2 Short Press Command
-      default: remote_button_short_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
+    # Button 2 actions
     button2_short_action:
       name: Button 2 Short Press Action
       default: []
       selector:
         action: {}
-
-    button2_long_command:
-      name: Button 2 Long Press Command
-      default: remote_button_long_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
     button2_long_action:
       name: Button 2 Long Press Action
       default: []
       selector:
         action: {}
-
-    button2_double_command:
-      name: Button 2 Double Press Command
-      default: remote_button_double_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
     button2_double_action:
       name: Button 2 Double Press Action
       default: []
       selector:
         action: {}
 
-    # Button 3
-    button3_short_command:
-      name: Button 3 Short Press Command
-      default: remote_button_short_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
+    # Button 3 actions
     button3_short_action:
       name: Button 3 Short Press Action
       default: []
       selector:
         action: {}
-
-    button3_long_command:
-      name: Button 3 Long Press Command
-      default: remote_button_long_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
     button3_long_action:
       name: Button 3 Long Press Action
       default: []
       selector:
         action: {}
-
-    button3_double_command:
-      name: Button 3 Double Press Command
-      default: remote_button_double_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
     button3_double_action:
       name: Button 3 Double Press Action
       default: []
       selector:
         action: {}
 
-    # Button 4
-    button4_short_command:
-      name: Button 4 Short Press Command
-      default: remote_button_short_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
+    # Button 4 actions
     button4_short_action:
       name: Button 4 Short Press Action
       default: []
       selector:
         action: {}
-
-    button4_long_command:
-      name: Button 4 Long Press Command
-      default: remote_button_long_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
     button4_long_action:
       name: Button 4 Long Press Action
       default: []
       selector:
         action: {}
-
-    button4_double_command:
-      name: Button 4 Double Press Command
-      default: remote_button_double_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
     button4_double_action:
       name: Button 4 Double Press Action
       default: []
       selector:
         action: {}
 
-    # Button 5
-    button5_short_command:
-      name: Button 5 Short Press Command
-      default: remote_button_short_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
+    # Button 5 actions
     button5_short_action:
       name: Button 5 Short Press Action
       default: []
       selector:
         action: {}
-
-    button5_long_command:
-      name: Button 5 Long Press Command
-      default: remote_button_long_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
     button5_long_action:
       name: Button 5 Long Press Action
       default: []
       selector:
         action: {}
-
-    button5_double_command:
-      name: Button 5 Double Press Command
-      default: remote_button_double_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
     button5_double_action:
       name: Button 5 Double Press Action
       default: []
       selector:
         action: {}
 
-    # Button 6
-    button6_short_command:
-      name: Button 6 Short Press Command
-      default: remote_button_short_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
+    # Button 6 actions
     button6_short_action:
       name: Button 6 Short Press Action
       default: []
       selector:
         action: {}
-
-    button6_long_command:
-      name: Button 6 Long Press Command
-      default: remote_button_long_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
     button6_long_action:
       name: Button 6 Long Press Action
       default: []
       selector:
         action: {}
-
-    button6_double_command:
-      name: Button 6 Double Press Command
-      default: remote_button_double_press
-      selector:
-        select:
-          options:
-            - remote_button_short_press
-            - remote_button_long_press
-            - remote_button_double_press
     button6_double_action:
       name: Button 6 Double Press Action
       default: []
@@ -303,110 +130,98 @@ condition:
 
 action:
   - choose:
+      # Button 1
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 1) and (trigger.event.data.command == inputs.button1_short_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 1 and trigger.event.data.command == 'remote_button_short_press' }}"
         sequence: !input button1_short_action
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 1) and (trigger.event.data.command == inputs.button1_long_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 1 and trigger.event.data.command == 'remote_button_long_press' }}"
         sequence: !input button1_long_action
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 1) and (trigger.event.data.command == inputs.button1_double_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 1 and trigger.event.data.command == 'remote_button_double_press' }}"
         sequence: !input button1_double_action
 
+      # Button 2
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 2) and (trigger.event.data.command == inputs.button2_short_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 2 and trigger.event.data.command == 'remote_button_short_press' }}"
         sequence: !input button2_short_action
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 2) and (trigger.event.data.command == inputs.button2_long_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 2 and trigger.event.data.command == 'remote_button_long_press' }}"
         sequence: !input button2_long_action
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 2) and (trigger.event.data.command == inputs.button2_double_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 2 and trigger.event.data.command == 'remote_button_double_press' }}"
         sequence: !input button2_double_action
 
+      # Button 3
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 3) and (trigger.event.data.command == inputs.button3_short_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 3 and trigger.event.data.command == 'remote_button_short_press' }}"
         sequence: !input button3_short_action
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 3) and (trigger.event.data.command == inputs.button3_long_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 3 and trigger.event.data.command == 'remote_button_long_press' }}"
         sequence: !input button3_long_action
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 3) and (trigger.event.data.command == inputs.button3_double_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 3 and trigger.event.data.command == 'remote_button_double_press' }}"
         sequence: !input button3_double_action
 
+      # Button 4
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 4) and (trigger.event.data.command == inputs.button4_short_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 4 and trigger.event.data.command == 'remote_button_short_press' }}"
         sequence: !input button4_short_action
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 4) and (trigger.event.data.command == inputs.button4_long_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 4 and trigger.event.data.command == 'remote_button_long_press' }}"
         sequence: !input button4_long_action
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 4) and (trigger.event.data.command == inputs.button4_double_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 4 and trigger.event.data.command == 'remote_button_double_press' }}"
         sequence: !input button4_double_action
 
+      # Button 5
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 5) and (trigger.event.data.command == inputs.button5_short_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 5 and trigger.event.data.command == 'remote_button_short_press' }}"
         sequence: !input button5_short_action
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 5) and (trigger.event.data.command == inputs.button5_long_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 5 and trigger.event.data.command == 'remote_button_long_press' }}"
         sequence: !input button5_long_action
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 5) and (trigger.event.data.command == inputs.button5_double_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 5 and trigger.event.data.command == 'remote_button_double_press' }}"
         sequence: !input button5_double_action
 
+      # Button 6
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 6) and (trigger.event.data.command == inputs.button6_short_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 6 and trigger.event.data.command == 'remote_button_short_press' }}"
         sequence: !input button6_short_action
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 6) and (trigger.event.data.command == inputs.button6_long_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 6 and trigger.event.data.command == 'remote_button_long_press' }}"
         sequence: !input button6_long_action
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ (trigger.event.data.endpoint_id == 6) and (trigger.event.data.command == inputs.button6_double_command) }}
+            value_template: "{{ trigger.event.data.endpoint_id == 6 and trigger.event.data.command == 'remote_button_double_press' }}"
         sequence: !input button6_double_action
