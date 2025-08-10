@@ -1,5 +1,5 @@
 blueprint:
-  name: ZHA Scene Switch Handler (up to 6 buttons, variables) v3.8
+  name: ZHA Scene Switch Handler (up to 6 buttons, device_id check with variables) v3.9
   description: >
     Handle ZHA scene switch button presses (up to 6 buttons).
     Each button supports short_press, long_press, and double_press events with fixed commands.
@@ -8,36 +8,129 @@ blueprint:
   input:
     target_device:
       name: Zigbee Scene Switch
-      description: Select your ZHA scene switch
+      description: Select your ZHA scene switch (device)
       selector:
         device:
           integration: zha
 
+    # --- Button 1 Actions ---
     button1_short_action:
-      name: Button 1 Short Press Action
+      name: "Button 1 Short Press Action"
       default: []
       selector:
         action: {}
 
     button1_long_action:
-      name: Button 1 Long Press Action
+      name: "Button 1 Long Press Action"
       default: []
       selector:
         action: {}
 
     button1_double_action:
-      name: Button 1 Double Press Action
+      name: "Button 1 Double Press Action"
       default: []
       selector:
         action: {}
 
-    # Аналогично для кнопок 2-6 (пропущено для краткости)...
+    # --- Button 2 Actions ---
+    button2_short_action:
+      name: "Button 2 Short Press Action"
+      default: []
+      selector:
+        action: {}
+
+    button2_long_action:
+      name: "Button 2 Long Press Action"
+      default: []
+      selector:
+        action: {}
+
+    button2_double_action:
+      name: "Button 2 Double Press Action"
+      default: []
+      selector:
+        action: {}
+
+    # --- Button 3 Actions ---
+    button3_short_action:
+      name: "Button 3 Short Press Action"
+      default: []
+      selector:
+        action: {}
+
+    button3_long_action:
+      name: "Button 3 Long Press Action"
+      default: []
+      selector:
+        action: {}
+
+    button3_double_action:
+      name: "Button 3 Double Press Action"
+      default: []
+      selector:
+        action: {}
+
+    # --- Button 4 Actions ---
+    button4_short_action:
+      name: "Button 4 Short Press Action"
+      default: []
+      selector:
+        action: {}
+
+    button4_long_action:
+      name: "Button 4 Long Press Action"
+      default: []
+      selector:
+        action: {}
+
+    button4_double_action:
+      name: "Button 4 Double Press Action"
+      default: []
+      selector:
+        action: {}
+
+    # --- Button 5 Actions ---
+    button5_short_action:
+      name: "Button 5 Short Press Action"
+      default: []
+      selector:
+        action: {}
+
+    button5_long_action:
+      name: "Button 5 Long Press Action"
+      default: []
+      selector:
+        action: {}
+
+    button5_double_action:
+      name: "Button 5 Double Press Action"
+      default: []
+      selector:
+        action: {}
+
+    # --- Button 6 Actions ---
+    button6_short_action:
+      name: "Button 6 Short Press Action"
+      default: []
+      selector:
+        action: {}
+
+    button6_long_action:
+      name: "Button 6 Long Press Action"
+      default: []
+      selector:
+        action: {}
+
+    button6_double_action:
+      name: "Button 6 Double Press Action"
+      default: []
+      selector:
+        action: {}
 
 mode: restart
 
 variables:
   target_device: !input target_device
-  # Можно добавить и другие переменные, если нужно
 
 trigger:
   - platform: event
@@ -48,18 +141,17 @@ condition: []
 action:
   - service: persistent_notification.create
     data:
-      title: "Debug Blueprint Input"
+      title: "ZHA Event Debug"
       message: >
-        target_device id: {{ target_device.id }}
-        target_device ieee: {{ state_attr(target_device.entity_id, 'ieee') }}
-        event device_id: {{ trigger.event.data.device_id }}
-        event endpoint_id: {{ trigger.event.data.endpoint_id }}
-        event command: {{ trigger.event.data.command }}
+        Target device id: {{ target_device }}
+        Event device_id: {{ trigger.event.data.device_id }}
+        Endpoint id: {{ trigger.event.data.endpoint_id }}
+        Command: {{ trigger.event.data.command }}
 
   - choose:
       - conditions:
           - condition: template
-            value_template: "{{ trigger.event.data.device_id == target_device.id }}"
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 1 }}"
           - condition: template
@@ -68,7 +160,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: "{{ trigger.event.data.device_id == target_device.id }}"
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 1 }}"
           - condition: template
@@ -77,11 +169,144 @@ action:
 
       - conditions:
           - condition: template
-            value_template: "{{ trigger.event.data.device_id == target_device.id }}"
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 1 }}"
           - condition: template
             value_template: "{{ trigger.event.data.command == 'remote_button_double_press' }}"
         sequence: !input button1_double_action
 
-      # Добавь остальные кнопки аналогично
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.endpoint_id == 2 }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'remote_button_short_press' }}"
+        sequence: !input button2_short_action
+
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.endpoint_id == 2 }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'remote_button_long_press' }}"
+        sequence: !input button2_long_action
+
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.endpoint_id == 2 }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'remote_button_double_press' }}"
+        sequence: !input button2_double_action
+
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.endpoint_id == 3 }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'remote_button_short_press' }}"
+        sequence: !input button3_short_action
+
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.endpoint_id == 3 }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'remote_button_long_press' }}"
+        sequence: !input button3_long_action
+
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.endpoint_id == 3 }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'remote_button_double_press' }}"
+        sequence: !input button3_double_action
+
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.endpoint_id == 4 }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'remote_button_short_press' }}"
+        sequence: !input button4_short_action
+
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.endpoint_id == 4 }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'remote_button_long_press' }}"
+        sequence: !input button4_long_action
+
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.endpoint_id == 4 }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'remote_button_double_press' }}"
+        sequence: !input button4_double_action
+
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.endpoint_id == 5 }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'remote_button_short_press' }}"
+        sequence: !input button5_short_action
+
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.endpoint_id == 5 }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'remote_button_long_press' }}"
+        sequence: !input button5_long_action
+
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.endpoint_id == 5 }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'remote_button_double_press' }}"
+        sequence: !input button5_double_action
+
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.endpoint_id == 6 }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'remote_button_short_press' }}"
+        sequence: !input button6_short_action
+
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.endpoint_id == 6 }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'remote_button_long_press' }}"
+        sequence: !input button6_long_action
+
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.device_id == target_device }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.endpoint_id == 6 }}"
+          - condition: template
+            value_template: "{{ trigger.event.data.command == 'remote_button_double_press' }}"
+        sequence: !input button6_double_action
