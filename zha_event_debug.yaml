@@ -1,5 +1,5 @@
 blueprint:
-  name: ZHA Scene Switch Debug v1.4
+  name: ZHA Scene Switch Debug v1.5
   description: Отображает IEEE адреса целевого устройства и события для отладки
   domain: automation
   input:
@@ -21,7 +21,7 @@ action:
     data:
       title: "ZHA Event Debug"
       message: >
-        Целевое устройство IEEE: {{ state_attr(blueprint.inputs.target_device.entity_id, 'ieee') }}
+        Целевое устройство IEEE: {{ state_attr(inputs.target_device.entity_id, 'ieee') }}
         Событие IEEE: {{ trigger.event.data.device_ieee }}
         endpoint_id: {{ trigger.event.data.endpoint_id }}
         cluster_id: {{ trigger.event.data.cluster_id }}
