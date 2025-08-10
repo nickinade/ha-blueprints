@@ -1,5 +1,5 @@
 blueprint:
-  name: ZHA Scene Switch Handler (up to 6 buttons, device_id check with variables) v3.9
+  name: ZHA Scene Switch Handler v3.9
   description: >
     Handle ZHA scene switch button presses (up to 6 buttons).
     Each button supports short_press, long_press, and double_press events with fixed commands.
@@ -13,7 +13,14 @@ blueprint:
         device:
           integration: zha
 
-    # --- Button 1 Actions ---
+    # --- Button 1 Section ---
+    button1_section:
+      name: "Button 1"
+      description: "Actions for Button 1"
+      default: {}
+      selector:
+        object: {}
+
     button1_short_action:
       name: "Button 1 Short Press Action"
       default: []
@@ -32,7 +39,14 @@ blueprint:
       selector:
         action: {}
 
-    # --- Button 2 Actions ---
+    # --- Button 2 Section ---
+    button2_section:
+      name: "Button 2"
+      description: "Actions for Button 2"
+      default: {}
+      selector:
+        object: {}
+
     button2_short_action:
       name: "Button 2 Short Press Action"
       default: []
@@ -51,7 +65,14 @@ blueprint:
       selector:
         action: {}
 
-    # --- Button 3 Actions ---
+    # --- Button 3 Section ---
+    button3_section:
+      name: "Button 3"
+      description: "Actions for Button 3"
+      default: {}
+      selector:
+        object: {}
+
     button3_short_action:
       name: "Button 3 Short Press Action"
       default: []
@@ -70,7 +91,14 @@ blueprint:
       selector:
         action: {}
 
-    # --- Button 4 Actions ---
+    # --- Button 4 Section ---
+    button4_section:
+      name: "Button 4"
+      description: "Actions for Button 4"
+      default: {}
+      selector:
+        object: {}
+
     button4_short_action:
       name: "Button 4 Short Press Action"
       default: []
@@ -89,7 +117,14 @@ blueprint:
       selector:
         action: {}
 
-    # --- Button 5 Actions ---
+    # --- Button 5 Section ---
+    button5_section:
+      name: "Button 5"
+      description: "Actions for Button 5"
+      default: {}
+      selector:
+        object: {}
+
     button5_short_action:
       name: "Button 5 Short Press Action"
       default: []
@@ -108,7 +143,14 @@ blueprint:
       selector:
         action: {}
 
-    # --- Button 6 Actions ---
+    # --- Button 6 Section ---
+    button6_section:
+      name: "Button 6"
+      description: "Actions for Button 6"
+      default: {}
+      selector:
+        object: {}
+
     button6_short_action:
       name: "Button 6 Short Press Action"
       default: []
@@ -139,15 +181,6 @@ trigger:
 condition: []
 
 action:
-  - service: persistent_notification.create
-    data:
-      title: "ZHA Event Debug"
-      message: >
-        Target device id: {{ target_device }}
-        Event device_id: {{ trigger.event.data.device_id }}
-        Endpoint id: {{ trigger.event.data.endpoint_id }}
-        Command: {{ trigger.event.data.command }}
-
   - choose:
       - conditions:
           - condition: template
