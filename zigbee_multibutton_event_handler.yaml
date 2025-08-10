@@ -1,5 +1,5 @@
 blueprint:
-  name: ZHA Scene Switch Handler (up to 6 buttons) v1.3
+  name: ZHA Scene Switch Handler (up to 6 buttons) v1.4
   description: Handle ZHA scene switch button presses (supports up to 6 buttons with multiple press types)
   domain: automation
   input:
@@ -111,55 +111,55 @@ trigger:
 condition:
   - condition: template
     value_template: >
-      {{ (trigger is defined and trigger.event is defined) and
-         trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+      {{ trigger is defined and trigger.event is defined and
+         trigger.event.data.device_id == inputs.target_device.id }}
 
 action:
   - choose:
       - conditions:
           - condition: template
             value_template: >
-              {{ (trigger is defined and trigger.event is defined) and
+              {{ trigger is defined and trigger.event is defined and
                  trigger.event.data.endpoint_id == 1 and
-                 trigger.event.data.command == blueprint.inputs.button1_command }}
+                 trigger.event.data.command == inputs.button1_command }}
         sequence: !input button1_action
 
       - conditions:
           - condition: template
             value_template: >
-              {{ (trigger is defined and trigger.event is defined) and
+              {{ trigger is defined and trigger.event is defined and
                  trigger.event.data.endpoint_id == 2 and
-                 trigger.event.data.command == blueprint.inputs.button2_command }}
+                 trigger.event.data.command == inputs.button2_command }}
         sequence: !input button2_action
 
       - conditions:
           - condition: template
             value_template: >
-              {{ (trigger is defined and trigger.event is defined) and
+              {{ trigger is defined and trigger.event is defined and
                  trigger.event.data.endpoint_id == 3 and
-                 trigger.event.data.command == blueprint.inputs.button3_command }}
+                 trigger.event.data.command == inputs.button3_command }}
         sequence: !input button3_action
 
       - conditions:
           - condition: template
             value_template: >
-              {{ (trigger is defined and trigger.event is defined) and
+              {{ trigger is defined and trigger.event is defined and
                  trigger.event.data.endpoint_id == 4 and
-                 trigger.event.data.command == blueprint.inputs.button4_command }}
+                 trigger.event.data.command == inputs.button4_command }}
         sequence: !input button4_action
 
       - conditions:
           - condition: template
             value_template: >
-              {{ (trigger is defined and trigger.event is defined) and
+              {{ trigger is defined and trigger.event is defined and
                  trigger.event.data.endpoint_id == 5 and
-                 trigger.event.data.command == blueprint.inputs.button5_command }}
+                 trigger.event.data.command == inputs.button5_command }}
         sequence: !input button5_action
 
       - conditions:
           - condition: template
             value_template: >
-              {{ (trigger is defined and trigger.event is defined) and
+              {{ trigger is defined and trigger.event is defined and
                  trigger.event.data.endpoint_id == 6 and
-                 trigger.event.data.command == blueprint.inputs.button6_command }}
+                 trigger.event.data.command == inputs.button6_command }}
         sequence: !input button6_action
