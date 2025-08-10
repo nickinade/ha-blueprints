@@ -1,5 +1,5 @@
 blueprint:
-  name: ZHA Scene Switch Handler (up to 6 buttons) v2.4
+  name: ZHA Scene Switch Handler (up to 6 buttons) v2.5
   description: Handle ZHA scene switch button presses (supports up to 6 buttons with multiple press types).
   domain: automation
   input:
@@ -112,13 +112,10 @@ condition: []
 
 action:
   - service: persistent_notification.create
-    data_template:
+    data:
       title: "Debug ZHA Event and Device Attributes"
       message: >
         event.device_ieee raw: {{ trigger.event.data.device_ieee | string }}
-        event.device_ieee normalized: {{ trigger.event.data.device_ieee | replace(":", "") | lower }}
-        inputs.device_ieee raw: {{ state_attr(inputs.target_device.entity_id, 'ieee') | string }}
-        inputs.device_ieee normalized: {{ state_attr(inputs.target_device.entity_id, 'ieee') | replace(":", "") | lower }}
         endpoint_id: {{ trigger.event.data.endpoint_id | string }}
         cluster_id: {{ trigger.event.data.cluster_id | string }}
         command: {{ trigger.event.data.command | string }}
@@ -128,65 +125,47 @@ action:
       - conditions:
           - condition: template
             value_template: >
-              {% if trigger is defined and trigger.event is defined %}
-                {{ trigger.event.data.endpoint_id == 1 and
-                   trigger.event.data.command == inputs.button1_command }}
-              {% else %}
-                false
-              {% endif %}
+              {{ trigger.event.data.endpoint_id == 1 and
+                 trigger.event.data.command == inputs.button1_command and
+                 trigger.event.data.device_ieee == state_attr(inputs.target_device.entity_id, 'ieee') }}
         sequence: !input button1_action
 
       - conditions:
           - condition: template
             value_template: >
-              {% if trigger is defined and trigger.event is defined %}
-                {{ trigger.event.data.endpoint_id == 2 and
-                   trigger.event.data.command == inputs.button2_command }}
-              {% else %}
-                false
-              {% endif %}
+              {{ trigger.event.data.endpoint_id == 2 and
+                 trigger.event.data.command == inputs.button2_command and
+                 trigger.event.data.device_ieee == state_attr(inputs.target_device.entity_id, 'ieee') }}
         sequence: !input button2_action
 
       - conditions:
           - condition: template
             value_template: >
-              {% if trigger is defined and trigger.event is defined %}
-                {{ trigger.event.data.endpoint_id == 3 and
-                   trigger.event.data.command == inputs.button3_command }}
-              {% else %}
-                false
-              {% endif %}
+              {{ trigger.event.data.endpoint_id == 3 and
+                 trigger.event.data.command == inputs.button3_command and
+                 trigger.event.data.device_ieee == state_attr(inputs.target_device.entity_id, 'ieee') }}
         sequence: !input button3_action
 
       - conditions:
           - condition: template
             value_template: >
-              {% if trigger is defined and trigger.event is defined %}
-                {{ trigger.event.data.endpoint_id == 4 and
-                   trigger.event.data.command == inputs.button4_command }}
-              {% else %}
-                false
-              {% endif %}
+              {{ trigger.event.data.endpoint_id == 4 and
+                 trigger.event.data.command == inputs.button4_command and
+                 trigger.event.data.device_ieee == state_attr(inputs.target_device.entity_id, 'ieee') }}
         sequence: !input button4_action
 
       - conditions:
           - condition: template
             value_template: >
-              {% if trigger is defined and trigger.event is defined %}
-                {{ trigger.event.data.endpoint_id == 5 and
-                   trigger.event.data.command == inputs.button5_command }}
-              {% else %}
-                false
-              {% endif %}
+              {{ trigger.event.data.endpoint_id == 5 and
+                 trigger.event.data.command == inputs.button5_command and
+                 trigger.event.data.device_ieee == state_attr(inputs.target_device.entity_id, 'ieee') }}
         sequence: !input button5_action
 
       - conditions:
           - condition: template
             value_template: >
-              {% if trigger is defined and trigger.event is defined %}
-                {{ trigger.event.data.endpoint_id == 6 and
-                   trigger.event.data.command == inputs.button6_command }}
-              {% else %}
-                false
-              {% endif %}
+              {{ trigger.event.data.endpoint_id == 6 and
+                 trigger.event.data.command == inputs.button6_command and
+                 trigger.event.data.device_ieee == state_attr(inputs.target_device.entity_id, 'ieee') }}
         sequence: !input button6_action
