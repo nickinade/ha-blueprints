@@ -1,5 +1,5 @@
 blueprint:
-  name: ZHA Scene Switch Handler (up to 6 buttons) v1.7
+  name: ZHA Scene Switch Handler (up to 6 buttons) v1.8
   description: Handle ZHA scene switch button presses (supports up to 6 buttons with multiple press types)
   domain: automation
   input:
@@ -111,9 +111,8 @@ trigger:
 condition:
   - condition: template
     value_template: >
-      {% if blueprint is defined %}
-        {{ trigger is defined and trigger.event is defined and
-           trigger.event.data.device_ieee == blueprint.inputs.target_device.identifiers[0][1] }}
+      {% if blueprint is defined and trigger is defined and trigger.event is defined %}
+        {{ trigger.event.data.device_ieee == state_attr(blueprint.inputs.target_device.entity_id, 'ieee') }}
       {% else %}
         false
       {% endif %}
@@ -121,20 +120,17 @@ condition:
 action:
   - service: persistent_notification.create
     data:
-      title: "Debug ZHA Switch"
-      message: |
-        event.device_ieee: {{ trigger.event.data.device_ieee }}
-        blueprint.device_ieee: {{ blueprint.inputs.target_device.identifiers[0][1] }}
-        event.device_id: {{ trigger.event.data.device_id }}
-        blueprint.device_id: {{ blueprint.inputs.target_device.id }}
+      title: "Debug ZHA Device"
+      message: >
+        event.device_ieee: {{ trigger.event.data.device_ieee | string }}
+        blueprint.ieee: {{ state_attr(blueprint.inputs.target_device.entity_id, 'ieee') | string }}
 
   - choose:
       - conditions:
           - condition: template
             value_template: >
-              {% if blueprint is defined %}
-                {{ trigger is defined and trigger.event is defined and
-                   trigger.event.data.endpoint_id == 1 and
+              {% if blueprint is defined and trigger is defined and trigger.event is defined %}
+                {{ trigger.event.data.endpoint_id == 1 and
                    trigger.event.data.command == blueprint.inputs.button1_command }}
               {% else %}
                 false
@@ -144,9 +140,8 @@ action:
       - conditions:
           - condition: template
             value_template: >
-              {% if blueprint is defined %}
-                {{ trigger is defined and trigger.event is defined and
-                   trigger.event.data.endpoint_id == 2 and
+              {% if blueprint is defined and trigger is defined and trigger.event is defined %}
+                {{ trigger.event.data.endpoint_id == 2 and
                    trigger.event.data.command == blueprint.inputs.button2_command }}
               {% else %}
                 false
@@ -156,9 +151,8 @@ action:
       - conditions:
           - condition: template
             value_template: >
-              {% if blueprint is defined %}
-                {{ trigger is defined and trigger.event is defined and
-                   trigger.event.data.endpoint_id == 3 and
+              {% if blueprint is defined and trigger is defined and trigger.event is defined %}
+                {{ trigger.event.data.endpoint_id == 3 and
                    trigger.event.data.command == blueprint.inputs.button3_command }}
               {% else %}
                 false
@@ -168,9 +162,8 @@ action:
       - conditions:
           - condition: template
             value_template: >
-              {% if blueprint is defined %}
-                {{ trigger is defined and trigger.event is defined and
-                   trigger.event.data.endpoint_id == 4 and
+              {% if blueprint is defined and trigger is defined and trigger.event is defined %}
+                {{ trigger.event.data.endpoint_id == 4 and
                    trigger.event.data.command == blueprint.inputs.button4_command }}
               {% else %}
                 false
@@ -180,9 +173,8 @@ action:
       - conditions:
           - condition: template
             value_template: >
-              {% if blueprint is defined %}
-                {{ trigger is defined and trigger.event is defined and
-                   trigger.event.data.endpoint_id == 5 and
+              {% if blueprint is defined and trigger is defined and trigger.event is defined %}
+                {{ trigger.event.data.endpoint_id == 5 and
                    trigger.event.data.command == blueprint.inputs.button5_command }}
               {% else %}
                 false
@@ -192,9 +184,8 @@ action:
       - conditions:
           - condition: template
             value_template: >
-              {% if blueprint is defined %}
-                {{ trigger is defined and trigger.event is defined and
-                   trigger.event.data.endpoint_id == 6 and
+              {% if blueprint is defined and trigger is defined and trigger.event is defined %}
+                {{ trigger.event.data.endpoint_id == 6 and
                    trigger.event.data.command == blueprint.inputs.button6_command }}
               {% else %}
                 false
