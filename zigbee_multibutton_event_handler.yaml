@@ -1,5 +1,5 @@
 blueprint:
-  name: ZHA Scene Switch Handler (up to 6 buttons, device_id check) v3.4
+  name: ZHA Scene Switch Handler (up to 6 buttons, device_id check) v3.6
   description: >
     Handle ZHA scene switch button presses (up to 6 buttons).
     Each button supports short_press, long_press, and double_press events with fixed commands.
@@ -12,6 +12,14 @@ blueprint:
       selector:
         device:
           integration: zha
+
+    # --- Button 1 Section ---
+    button1_section:
+      name: "Button 1"
+      description: "Actions for Button 1"
+      default: {}
+      selector:
+        object: {}
 
     button1_short_action:
       name: "Button 1 Short Press Action"
@@ -31,6 +39,14 @@ blueprint:
       selector:
         action: {}
 
+    # --- Button 2 Section ---
+    button2_section:
+      name: "Button 2"
+      description: "Actions for Button 2"
+      default: {}
+      selector:
+        object: {}
+
     button2_short_action:
       name: "Button 2 Short Press Action"
       default: []
@@ -48,6 +64,14 @@ blueprint:
       default: []
       selector:
         action: {}
+
+    # --- Button 3 Section ---
+    button3_section:
+      name: "Button 3"
+      description: "Actions for Button 3"
+      default: {}
+      selector:
+        object: {}
 
     button3_short_action:
       name: "Button 3 Short Press Action"
@@ -67,6 +91,14 @@ blueprint:
       selector:
         action: {}
 
+    # --- Button 4 Section ---
+    button4_section:
+      name: "Button 4"
+      description: "Actions for Button 4"
+      default: {}
+      selector:
+        object: {}
+
     button4_short_action:
       name: "Button 4 Short Press Action"
       default: []
@@ -85,6 +117,14 @@ blueprint:
       selector:
         action: {}
 
+    # --- Button 5 Section ---
+    button5_section:
+      name: "Button 5"
+      description: "Actions for Button 5"
+      default: {}
+      selector:
+        object: {}
+
     button5_short_action:
       name: "Button 5 Short Press Action"
       default: []
@@ -102,6 +142,14 @@ blueprint:
       default: []
       selector:
         action: {}
+
+    # --- Button 6 Section ---
+    button6_section:
+      name: "Button 6"
+      description: "Actions for Button 6"
+      default: {}
+      selector:
+        object: {}
 
     button6_short_action:
       name: "Button 6 Short Press Action"
@@ -132,21 +180,16 @@ condition: []
 action:
   - service: persistent_notification.create
     data:
-      title: "Debug ZHA Event and Blueprint Inputs"
+      title: "Debug Blueprint Inputs"
       message: >
-        blueprint defined: {{ blueprint is defined }}
-        trigger defined: {{ trigger is defined }}
-        trigger.event defined: {{ trigger.event is defined }}
-        event.device_id: {{ trigger.event.data.device_id if trigger and trigger.event else 'N/A' }}
-        blueprint.target_device_id: {{ blueprint.inputs.target_device.id if blueprint else 'N/A' }}
-        event.endpoint_id: {{ trigger.event.data.endpoint_id if trigger and trigger.event else 'N/A' }}
-        event.command: {{ trigger.event.data.command if trigger and trigger.event else 'N/A' }}
+        target_device: {{ blueprint.inputs.target_device }}
+        target_device id: {{ blueprint.inputs.target_device.id if blueprint.inputs.target_device is defined else 'undefined' }}
+        target_device entity_id: {{ blueprint.inputs.target_device.entity_id if blueprint.inputs.target_device is defined else 'undefined' }}
 
   - choose:
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 1 }}"
           - condition: template
@@ -155,8 +198,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 1 }}"
           - condition: template
@@ -165,8 +207,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 1 }}"
           - condition: template
@@ -175,8 +216,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 2 }}"
           - condition: template
@@ -185,8 +225,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 2 }}"
           - condition: template
@@ -195,8 +234,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 2 }}"
           - condition: template
@@ -205,8 +243,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 3 }}"
           - condition: template
@@ -215,8 +252,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 3 }}"
           - condition: template
@@ -225,8 +261,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 3 }}"
           - condition: template
@@ -235,8 +270,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 4 }}"
           - condition: template
@@ -245,8 +279,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 4 }}"
           - condition: template
@@ -255,8 +288,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 4 }}"
           - condition: template
@@ -265,8 +297,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 5 }}"
           - condition: template
@@ -275,8 +306,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 5 }}"
           - condition: template
@@ -285,8 +315,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 5 }}"
           - condition: template
@@ -295,8 +324,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 6 }}"
           - condition: template
@@ -305,8 +333,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 6 }}"
           - condition: template
@@ -315,8 +342,7 @@ action:
 
       - conditions:
           - condition: template
-            value_template: >
-              {{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}
+            value_template: "{{ trigger.event.data.device_id == blueprint.inputs.target_device.id }}"
           - condition: template
             value_template: "{{ trigger.event.data.endpoint_id == 6 }}"
           - condition: template
