@@ -5,7 +5,7 @@ blueprint:
     Each button supports short_press, long_press, and double_press events with fixed commands.
     User sets actions for each button and event type.
   domain: automation
-  inputs:
+  input:
     target_device:
       name: Zigbee Scene Switch
       description: Select your ZHA scene switch
@@ -180,11 +180,11 @@ condition: []
 action:
   - service: persistent_notification.create
     data:
-      title: "Debug Blueprint Inputs"
+      title: "Debug Blueprint Input"
       message: >
-        target_device: {{ blueprint.inputs.target_device }}
-        target_device id: {{ blueprint.inputs.target_device.id if blueprint.inputs.target_device is defined else 'undefined' }}
-        target_device entity_id: {{ blueprint.inputs.target_device.entity_id if blueprint.inputs.target_device is defined else 'undefined' }}
+        target_device: {{ blueprint.input.target_device }}
+        target_device id: {{ blueprint.input.target_device.id if blueprint.input.target_device is defined else 'undefined' }}
+        target_device entity_id: {{ blueprint.input.target_device.entity_id if blueprint.input.target_device is defined else 'undefined' }}
 
   - choose:
       - conditions:
