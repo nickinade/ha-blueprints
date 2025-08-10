@@ -1,6 +1,8 @@
 blueprint:
-  name: ZHA Scene Switch Handler (up to 6 buttons) v2.6
-  description: Handle ZHA scene switch button presses (supports up to 6 buttons with multiple press types). Device IEEE comparison normalized.
+  name: ZHA Scene Switch Handler (up to 6 buttons, multi-event) v2.8
+  description: >
+    Handle ZHA scene switch button presses (supports up to 6 buttons).
+    For each button you can set actions for short, long, and double press separately.
   domain: automation
   input:
     target_device:
@@ -10,9 +12,9 @@ blueprint:
         device:
           integration: zha
 
-    button1_command:
-      name: Button 1 Command
-      description: Select press type for Button 1
+    # Button 1
+    button1_short_command:
+      name: Button 1 Short Press Command
       default: remote_button_short_press
       selector:
         select:
@@ -20,45 +22,45 @@ blueprint:
             - remote_button_short_press
             - remote_button_long_press
             - remote_button_double_press
-    button1_action:
-      name: Button 1 Action
-      description: Action to run when Button 1 is pressed
+    button1_short_action:
+      name: Button 1 Short Press Action
       default: []
       selector:
         action: {}
 
-    button2_command:
-      name: Button 2 Command
-      default: remote_button_short_press
+    button1_long_command:
+      name: Button 1 Long Press Command
+      default: remote_button_long_press
       selector:
         select:
           options:
             - remote_button_short_press
             - remote_button_long_press
             - remote_button_double_press
-    button2_action:
-      name: Button 2 Action
+    button1_long_action:
+      name: Button 1 Long Press Action
       default: []
       selector:
         action: {}
 
-    button3_command:
-      name: Button 3 Command
-      default: remote_button_short_press
+    button1_double_command:
+      name: Button 1 Double Press Command
+      default: remote_button_double_press
       selector:
         select:
           options:
             - remote_button_short_press
             - remote_button_long_press
             - remote_button_double_press
-    button3_action:
-      name: Button 3 Action
+    button1_double_action:
+      name: Button 1 Double Press Action
       default: []
       selector:
         action: {}
 
-    button4_command:
-      name: Button 4 Command
+    # Button 2
+    button2_short_command:
+      name: Button 2 Short Press Command
       default: remote_button_short_press
       selector:
         select:
@@ -66,29 +68,45 @@ blueprint:
             - remote_button_short_press
             - remote_button_long_press
             - remote_button_double_press
-    button4_action:
-      name: Button 4 Action
+    button2_short_action:
+      name: Button 2 Short Press Action
       default: []
       selector:
         action: {}
 
-    button5_command:
-      name: Button 5 Command
-      default: remote_button_short_press
+    button2_long_command:
+      name: Button 2 Long Press Command
+      default: remote_button_long_press
       selector:
         select:
           options:
             - remote_button_short_press
             - remote_button_long_press
             - remote_button_double_press
-    button5_action:
-      name: Button 5 Action
+    button2_long_action:
+      name: Button 2 Long Press Action
       default: []
       selector:
         action: {}
 
-    button6_command:
-      name: Button 6 Command
+    button2_double_command:
+      name: Button 2 Double Press Command
+      default: remote_button_double_press
+      selector:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button2_double_action:
+      name: Button 2 Double Press Action
+      default: []
+      selector:
+        action: {}
+
+    # Button 3
+    button3_short_command:
+      name: Button 3 Short Press Command
       default: remote_button_short_press
       selector:
         select:
@@ -96,8 +114,176 @@ blueprint:
             - remote_button_short_press
             - remote_button_long_press
             - remote_button_double_press
-    button6_action:
-      name: Button 6 Action
+    button3_short_action:
+      name: Button 3 Short Press Action
+      default: []
+      selector:
+        action: {}
+
+    button3_long_command:
+      name: Button 3 Long Press Command
+      default: remote_button_long_press
+      selector:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button3_long_action:
+      name: Button 3 Long Press Action
+      default: []
+      selector:
+        action: {}
+
+    button3_double_command:
+      name: Button 3 Double Press Command
+      default: remote_button_double_press
+      selector:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button3_double_action:
+      name: Button 3 Double Press Action
+      default: []
+      selector:
+        action: {}
+
+    # Button 4
+    button4_short_command:
+      name: Button 4 Short Press Command
+      default: remote_button_short_press
+      selector:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button4_short_action:
+      name: Button 4 Short Press Action
+      default: []
+      selector:
+        action: {}
+
+    button4_long_command:
+      name: Button 4 Long Press Command
+      default: remote_button_long_press
+      selector:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button4_long_action:
+      name: Button 4 Long Press Action
+      default: []
+      selector:
+        action: {}
+
+    button4_double_command:
+      name: Button 4 Double Press Command
+      default: remote_button_double_press
+      selector:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button4_double_action:
+      name: Button 4 Double Press Action
+      default: []
+      selector:
+        action: {}
+
+    # Button 5
+    button5_short_command:
+      name: Button 5 Short Press Command
+      default: remote_button_short_press
+      selector:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button5_short_action:
+      name: Button 5 Short Press Action
+      default: []
+      selector:
+        action: {}
+
+    button5_long_command:
+      name: Button 5 Long Press Command
+      default: remote_button_long_press
+      selector:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button5_long_action:
+      name: Button 5 Long Press Action
+      default: []
+      selector:
+        action: {}
+
+    button5_double_command:
+      name: Button 5 Double Press Command
+      default: remote_button_double_press
+      selector:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button5_double_action:
+      name: Button 5 Double Press Action
+      default: []
+      selector:
+        action: {}
+
+    # Button 6
+    button6_short_command:
+      name: Button 6 Short Press Command
+      default: remote_button_short_press
+      selector:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button6_short_action:
+      name: Button 6 Short Press Action
+      default: []
+      selector:
+        action: {}
+
+    button6_long_command:
+      name: Button 6 Long Press Command
+      default: remote_button_long_press
+      selector:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button6_long_action:
+      name: Button 6 Long Press Action
+      default: []
+      selector:
+        action: {}
+
+    button6_double_command:
+      name: Button 6 Double Press Command
+      default: remote_button_double_press
+      selector:
+        select:
+          options:
+            - remote_button_short_press
+            - remote_button_long_press
+            - remote_button_double_press
+    button6_double_action:
+      name: Button 6 Double Press Action
       default: []
       selector:
         action: {}
@@ -108,88 +294,119 @@ trigger:
   - platform: event
     event_type: zha_event
 
-condition: []
+condition:
+  - condition: template
+    value_template: >
+      {% set event_ieee = trigger.event.data.device_ieee | replace(":", "") | lower %}
+      {% set device_ieee = state_attr(inputs.target_device.entity_id, 'ieee') | replace(":", "") | lower %}
+      {{ event_ieee == device_ieee }}
 
 action:
-  - service: persistent_notification.create
-    data:
-      title: "Debug ZHA Event and Device Attributes"
-      message: >
-        event.device_ieee raw: {{ trigger.event.data.device_ieee | string }}
-        endpoint_id: {{ trigger.event.data.endpoint_id | string }}
-        cluster_id: {{ trigger.event.data.cluster_id | string }}
-        command: {{ trigger.event.data.command | string }}
-        args: {{ trigger.event.data.args | string }}
-
   - choose:
       - conditions:
           - condition: template
             value_template: >
-              {% set event_ieee = trigger.event.data.device_ieee | replace(":", "") | lower %}
-              {% set device_ieee = state_attr(inputs.target_device.entity_id, 'ieee') | replace(":", "") | lower %}
-              {{
-                (trigger.event.data.endpoint_id == 1) and
-                (trigger.event.data.command == inputs.button1_command) and
-                (event_ieee == device_ieee)
-              }}
-        sequence: !input button1_action
+              {{ (trigger.event.data.endpoint_id == 1) and (trigger.event.data.command == inputs.button1_short_command) }}
+        sequence: !input button1_short_action
 
       - conditions:
           - condition: template
             value_template: >
-              {% set event_ieee = trigger.event.data.device_ieee | replace(":", "") | lower %}
-              {% set device_ieee = state_attr(inputs.target_device.entity_id, 'ieee') | replace(":", "") | lower %}
-              {{
-                (trigger.event.data.endpoint_id == 2) and
-                (trigger.event.data.command == inputs.button2_command) and
-                (event_ieee == device_ieee)
-              }}
-        sequence: !input button2_action
+              {{ (trigger.event.data.endpoint_id == 1) and (trigger.event.data.command == inputs.button1_long_command) }}
+        sequence: !input button1_long_action
 
       - conditions:
           - condition: template
             value_template: >
-              {% set event_ieee = trigger.event.data.device_ieee | replace(":", "") | lower %}
-              {% set device_ieee = state_attr(inputs.target_device.entity_id, 'ieee') | replace(":", "") | lower %}
-              {{
-                (trigger.event.data.endpoint_id == 3) and
-                (trigger.event.data.command == inputs.button3_command) and
-                (event_ieee == device_ieee)
-              }}
-        sequence: !input button3_action
+              {{ (trigger.event.data.endpoint_id == 1) and (trigger.event.data.command == inputs.button1_double_command) }}
+        sequence: !input button1_double_action
 
       - conditions:
           - condition: template
             value_template: >
-              {% set event_ieee = trigger.event.data.device_ieee | replace(":", "") | lower %}
-              {% set device_ieee = state_attr(inputs.target_device.entity_id, 'ieee') | replace(":", "") | lower %}
-              {{
-                (trigger.event.data.endpoint_id == 4) and
-                (trigger.event.data.command == inputs.button4_command) and
-                (event_ieee == device_ieee)
-              }}
-        sequence: !input button4_action
+              {{ (trigger.event.data.endpoint_id == 2) and (trigger.event.data.command == inputs.button2_short_command) }}
+        sequence: !input button2_short_action
 
       - conditions:
           - condition: template
             value_template: >
-              {% set event_ieee = trigger.event.data.device_ieee | replace(":", "") | lower %}
-              {% set device_ieee = state_attr(inputs.target_device.entity_id, 'ieee') | replace(":", "") | lower %}
-              {{
-                (trigger.event.data.endpoint_id == 5) and
-                (trigger.event.data.command == inputs.button5_command) and
-                (event_ieee == device_ieee)
-              }}
-        sequence: !input button5_action
+              {{ (trigger.event.data.endpoint_id == 2) and (trigger.event.data.command == inputs.button2_long_command) }}
+        sequence: !input button2_long_action
 
       - conditions:
           - condition: template
             value_template: >
-              {% set event_ieee = trigger.event.data.device_ieee | replace(":", "") | lower %}
-              {% set device_ieee = state_attr(inputs.target_device.entity_id, 'ieee') | replace(":", "") | lower %}
-              {{
-                (trigger.event.data.endpoint_id == 6) and
-                (trigger.event.data.command == inputs.button6_command) and
-                (event_ieee == device_ieee)
-              }}
-        sequence: !input button6_action
+              {{ (trigger.event.data.endpoint_id == 2) and (trigger.event.data.command == inputs.button2_double_command) }}
+        sequence: !input button2_double_action
+
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ (trigger.event.data.endpoint_id == 3) and (trigger.event.data.command == inputs.button3_short_command) }}
+        sequence: !input button3_short_action
+
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ (trigger.event.data.endpoint_id == 3) and (trigger.event.data.command == inputs.button3_long_command) }}
+        sequence: !input button3_long_action
+
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ (trigger.event.data.endpoint_id == 3) and (trigger.event.data.command == inputs.button3_double_command) }}
+        sequence: !input button3_double_action
+
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ (trigger.event.data.endpoint_id == 4) and (trigger.event.data.command == inputs.button4_short_command) }}
+        sequence: !input button4_short_action
+
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ (trigger.event.data.endpoint_id == 4) and (trigger.event.data.command == inputs.button4_long_command) }}
+        sequence: !input button4_long_action
+
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ (trigger.event.data.endpoint_id == 4) and (trigger.event.data.command == inputs.button4_double_command) }}
+        sequence: !input button4_double_action
+
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ (trigger.event.data.endpoint_id == 5) and (trigger.event.data.command == inputs.button5_short_command) }}
+        sequence: !input button5_short_action
+
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ (trigger.event.data.endpoint_id == 5) and (trigger.event.data.command == inputs.button5_long_command) }}
+        sequence: !input button5_long_action
+
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ (trigger.event.data.endpoint_id == 5) and (trigger.event.data.command == inputs.button5_double_command) }}
+        sequence: !input button5_double_action
+
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ (trigger.event.data.endpoint_id == 6) and (trigger.event.data.command == inputs.button6_short_command) }}
+        sequence: !input button6_short_action
+
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ (trigger.event.data.endpoint_id == 6) and (trigger.event.data.command == inputs.button6_long_command) }}
+        sequence: !input button6_long_action
+
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ (trigger.event.data.endpoint_id == 6) and (trigger.event.data.command == inputs.button6_double_command) }}
+        sequence: !input button6_double_action
