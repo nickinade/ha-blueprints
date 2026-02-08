@@ -1,11 +1,11 @@
 blueprint:
-  name: Sync heater temperature with AC mode v1.3
+  name: Sync heater temperature with AC mode v1.4
   description: >
     Sets heater temperature based on AC mode.
     Heat -> 30°C, Cool -> 5°C.
     Works with multiple heaters.
     Runs only if at least one heater needs change.
-    Optionally runs extra actions.
+    Supports extra actions per mode.
   domain: automation
 
   input:
@@ -36,7 +36,8 @@ blueprint:
 
 trigger:
   - platform: state
-    entity_id: !input ac_entity
+    entity_id: []
+    # This will be replaced by the AC entity when creating the automation from the blueprint
 
 variables:
   ac: !input ac_entity
