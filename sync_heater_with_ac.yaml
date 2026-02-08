@@ -1,0 +1,60 @@
+blueprint:
+  name: Sync heater temperature with AC mode
+  description: >
+    Sets heater temperature based on AC mode.
+    Heat -> 30°C, Cool -> 5°C.
+    Runs only if heater temperature is different.
+    Optionally runs extra actions.
+  domain: automation
+  input:
+    ac_entity:
+      name: AC device
+      selector:
+        entity:
+          domain: climate
+
+    heater_entity:
+      name: Heater device
+      selector:
+        entity:
+          domain: climate
+
+    extra_action:
+      name: Optional extra action
+      description: Run additional actions when sync happens
+      default: []
+      selector:
+        action: {}
+
+trigger:
+  - platform: state
+    entity_id: !input ac_entity
+    attribute: hvac_mode
+
+variables:
+  ac: !input ac_entity
+  heater: !input heater_entity
+  heater_temp: "{{ state_attr(heater, 'temperature') | float(0) }}"
+  target_temp: >
+    {% if is_state(ac, 'heat') %}
+      30
+    {% elif is_state(ac, 'cool') %}
+      5
+    {% else %}
+      none
+    {% endif %}
+
+condition:
+  - condition: template
+    value_template: >
+      {{ target_temp != none and heater_temp != target_temp }}
+
+action:
+  - service: climate.set_temperature
+    target:
+      entity_id: !input heater_entity
+    data:
+      temperature: "{{ target_temp }}"
+
+  - choose: []
+    default: !input extra_action
