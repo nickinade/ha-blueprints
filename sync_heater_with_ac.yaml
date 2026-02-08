@@ -3,9 +3,11 @@ blueprint:
   description: >
     Sets heater temperature based on AC mode.
     Heat -> 30°C, Cool -> 5°C.
-    Runs only if heater temperature is different.
+    Works with multiple heaters.
+    Runs only if at least one heater needs change.
     Optionally runs extra actions.
   domain: automation
+
   input:
     ac_entity:
       name: AC device
@@ -13,15 +15,15 @@ blueprint:
         entity:
           domain: climate
 
-    heater_entity:
-      name: Heater device
+    heater_entities:
+      name: Heater devices
       selector:
         entity:
           domain: climate
+          multiple: true
 
     extra_action:
       name: Optional extra action
-      description: Run additional actions when sync happens
       default: []
       selector:
         action: {}
@@ -33,8 +35,7 @@ trigger:
 
 variables:
   ac: !input ac_entity
-  heater: !input heater_entity
-  heater_temp: "{{ state_attr(heater, 'temperature') | float(0) }}"
+  heaters: !input heater_entities
   target_temp: >
     {% if is_state(ac, 'heat') %}
       30
@@ -44,15 +45,24 @@ variables:
       none
     {% endif %}
 
+  heaters_to_update: >
+    {% set result = [] %}
+    {% for h in heaters %}
+      {% set current = state_attr(h, 'temperature') | float(0) %}
+      {% if target_temp != none and current != target_temp %}
+        {% set result = result + [h] %}
+      {% endif %}
+    {% endfor %}
+    {{ result }}
+
 condition:
   - condition: template
-    value_template: >
-      {{ target_temp != none and heater_temp != target_temp }}
+    value_template: "{{ heaters_to_update | length > 0 }}"
 
 action:
   - service: climate.set_temperature
     target:
-      entity_id: !input heater_entity
+      entity_id: "{{ heaters_to_update }}"
     data:
       temperature: "{{ target_temp }}"
 
