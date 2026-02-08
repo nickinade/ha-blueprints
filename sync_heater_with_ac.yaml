@@ -1,11 +1,12 @@
 blueprint:
-  name: Sync heater temperature with AC mode v1.4
+  name: Sync heater temperature with AC mode v1.5
   description: >
     Sets heater temperature based on AC mode.
     Heat -> 30°C, Cool -> 5°C.
     Works with multiple heaters.
     Runs only if at least one heater needs change.
     Supports extra actions per mode.
+    Triggered when AC turns on or mode changes.
   domain: automation
 
   input:
@@ -35,9 +36,12 @@ blueprint:
         action: {}
 
 trigger:
+  # Trigger on any state change (off <-> on) or hvac_mode change
   - platform: state
-    entity_id: []
-    # This will be replaced by the AC entity when creating the automation from the blueprint
+    entity_id: !input ac_entity
+  - platform: state
+    entity_id: !input ac_entity
+    attribute: hvac_mode
 
 variables:
   ac: !input ac_entity
@@ -62,16 +66,19 @@ variables:
     {{ result }}
 
 condition:
+  # Only continue if at least one heater needs an update
   - condition: template
     value_template: "{{ heaters_to_update | length > 0 }}"
 
 action:
+  # Set the target temperature on all heaters that need update
   - service: climate.set_temperature
     target:
       entity_id: "{{ heaters_to_update }}"
     data:
       temperature: "{{ target_temp }}"
 
+  # Run optional per-mode actions
   - choose:
       - conditions:
           - condition: state
