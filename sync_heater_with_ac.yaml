@@ -22,8 +22,14 @@ blueprint:
           domain: climate
           multiple: true
 
-    extra_action:
-      name: Optional extra action
+    heat_action:
+      name: Extra action on HEAT
+      default: []
+      selector:
+        action: {}
+
+    cool_action:
+      name: Extra action on COOL
       default: []
       selector:
         action: {}
@@ -68,5 +74,15 @@ action:
     data:
       temperature: "{{ target_temp }}"
 
-  - choose: []
-    default: !input extra_action
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: !input ac_entity
+            state: "heat"
+        sequence: !input heat_action
+
+      - conditions:
+          - condition: state
+            entity_id: !input ac_entity
+            state: "cool"
+        sequence: !input cool_action
