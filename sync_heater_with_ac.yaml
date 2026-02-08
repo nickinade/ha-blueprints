@@ -1,5 +1,5 @@
 blueprint:
-  name: Sync heater temperature with AC mode v1.2
+  name: Sync heater temperature with AC mode v1.3
   description: >
     Sets heater temperature based on AC mode.
     Heat -> 30°C, Cool -> 5°C.
@@ -37,9 +37,6 @@ blueprint:
 trigger:
   - platform: state
     entity_id: !input ac_entity
-  - platform: state
-    entity_id: !input ac_entity
-    attribute: hvac_mode
 
 variables:
   ac: !input ac_entity
