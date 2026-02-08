@@ -1,5 +1,5 @@
 blueprint:
-  name: Sync heater temperature with AC mode
+  name: Sync heater temperature with AC mode v1.0
   description: >
     Sets heater temperature based on AC mode.
     Heat -> 30°C, Cool -> 5°C.
